@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 public class ImageScraper extends AsyncTask<String, Image, Void>{
 
-    ICallback callback;
+    ICallback callback; // Test
     String html;
     public ImageScraper(ICallback callback){
         this.callback = callback;
