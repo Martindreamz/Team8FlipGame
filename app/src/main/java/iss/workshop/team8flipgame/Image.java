@@ -6,6 +6,7 @@ public class Image {
     private Bitmap bitmap;
     private int id;
     private int posID;
+    private String bianca;// Bianca Test Commit hmmm...
 
     public Image(Bitmap bitmap, int id) {
         this.bitmap = bitmap;
