@@ -6,9 +6,7 @@ import android.os.AsyncTask;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +14,7 @@ import java.util.Scanner;
 
 public class ImageScraper extends AsyncTask<String, Image, Void>{
 
-    ICallback callback; // Test
+    ICallback callback;
     String html;
     public ImageScraper(ICallback callback){
         this.callback = callback;

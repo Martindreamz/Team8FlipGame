@@ -1,6 +1,9 @@
 package iss.workshop.team8flipgame;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter{
@@ -39,23 +45,58 @@ public class ImageAdapter extends BaseAdapter{
 
     @Override
     public View getView(int pos, View view, ViewGroup viewGroup) {
-        final Image image = images.get(pos);
-        image.setPosID(pos);
-        final int position = pos;
-        if (view == null) {
-            final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            view = layoutInflater.inflate(R.layout.images, null);
-        }
-
-        final ImageView imageView = (ImageView)view.findViewById(R.id.image);
-        imageView.setImageBitmap(image.getBitmap());
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(image.getPosID());
+        if(mContext instanceof ImagePickingActivity){
+            final Image image = images.get(pos);
+            image.setPosID(pos);
+            final int position = pos;
+            if (view == null) {
+                final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                view = layoutInflater.inflate(R.layout.images, null);
             }
-        });
+            final ImageView imageView = (ImageView)view.findViewById(R.id.image);
+            imageView.setImageBitmap(image.getBitmap());
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onClick(View view) {
+
+                    System.out.println(image.getPosID());
+                    if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
+                    { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));}
+                    else{ImagePickingActivity.selectedCell.add(image.getPosID());}
+
+                    if (ImagePickingActivity.selectedCell.size()==ImagePickingActivity.gameImageNo){
+                        Intent intent = new Intent(mContext,GameActivity.class);
+                        intent.putExtra("selectedCells",ImagePickingActivity.selectedCell);
+                        mContext.startActivity(intent);
+                    }
+                }
+            });}
+
+        if(mContext instanceof GameActivity){
+
+            final Image image = images.get(pos);
+            image.setPosID(pos);
+            final int position = pos;
+            if (view == null) {
+                final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                view = layoutInflater.inflate(R.layout.images, null);
+            }
+
+            final ImageView imageView = (ImageView)view.findViewById(R.id.image);
+            imageView.setImageBitmap(image.getBitmap());
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onClick(View view) {
+
+                    System.out.println(image.getPosID());
+                }
+
+            });
+        }
         return view;
     }
 

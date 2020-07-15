@@ -32,6 +32,9 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
     GridView gridView;
     ImageAdapter imageAdapter;
     int childPos=0;
+    static ArrayList<Integer> selectedCell = new ArrayList<>();
+    static ArrayList<Image> selectedImage = new ArrayList<>();
+    static int gameImageNo = 6;
 
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
@@ -41,6 +44,7 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             currentImage.setScaleType(ImageView.ScaleType.FIT_XY);
             currentImage.setImageBitmap(((Image) msg.obj).getBitmap());
+            selectedImage.add(((Image)msg.obj));
             childPos++;
             System.out.println(childPos);
             if(childPos==getImageNo()){
@@ -79,7 +83,10 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
         int id = view.getId();
+        System.out.println(id);
         if(id == R.id.BTfetch){
+            selectedCell.clear();
+            selectedImage.clear();
             System.out.println("start scrapping");
             scrapImage();
 

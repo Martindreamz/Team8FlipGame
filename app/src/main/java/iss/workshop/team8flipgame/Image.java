@@ -2,8 +2,10 @@ package iss.workshop.team8flipgame;
 
 import android.graphics.Bitmap;
 
-public class Image {
-    private Bitmap bitmap;
+import java.io.Serializable;
+
+public class Image implements Serializable {
+    private Bitmap bitmap ;
     private int id;
     private int posID;
     private String bianca;// Bianca Test Commit hmmm...
