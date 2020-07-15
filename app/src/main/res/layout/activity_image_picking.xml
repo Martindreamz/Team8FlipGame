@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImagePickingActivity"
+    android:orientation="vertical">
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+
+>
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="https://stocksnap.io/"
+        android:id="@+id/ETurl"
+        android:layout_weight="0.7"
+        android:gravity="center"/>
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Fetch"
+        android:id="@+id/BTfetch"
+        android:layout_weight="0.3"
+        android:gravity="center"/>
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:id="@+id/gridView"
+        android:columnWidth="100dp"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="0dip"
+        android:horizontalSpacing="0dip"
+        android:scrollbars="none"
+        android:fadeScrollbars="true"
+     />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
