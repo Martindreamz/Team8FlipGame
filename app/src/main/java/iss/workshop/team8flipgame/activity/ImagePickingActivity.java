@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -35,7 +38,7 @@ import iss.workshop.team8flipgame.ImageScraper;
 import iss.workshop.team8flipgame.R;
 
 public class ImagePickingActivity extends AppCompatActivity
-        implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection {
+        implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection,AdapterView.OnItemClickListener {
 
     ArrayList<Image> images = new ArrayList<>();
     Button mFetchBtn;
@@ -55,7 +58,8 @@ public class ImagePickingActivity extends AppCompatActivity
     public static MutableLiveData<Integer> listen;
     BGMusicService bgMusicService;
     public static Boolean IS_MUTED; //Setting of BG Music
-
+    private static int MASK_HINT_COLOR = 0x99ffffff;
+    Boolean clickable;
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
         public void handleMessage(@NonNull Message msg){
@@ -87,7 +91,7 @@ public class ImagePickingActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_picking);
-
+        clickable = false;
         //for top bar
         urlReader = findViewById(R.id.ETurl);
         mFetchBtn = findViewById(R.id.BTfetch);
@@ -101,6 +105,7 @@ public class ImagePickingActivity extends AppCompatActivity
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);
+        gridView.setOnItemClickListener(this);
 
         //for bottom bar
         progressBar = findViewById(R.id.download_progress);
@@ -118,17 +123,17 @@ public class ImagePickingActivity extends AppCompatActivity
         }
 
         reset();
-
-        listen = new MutableLiveData<>();
-
-        listen.setValue(selectedCell.size()); //Initilize with a value
-
-        listen.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
-            }
-        });
+//
+//        listen = new MutableLiveData<>();
+//
+//        listen.setValue(selectedCell.size()); //Initilize with a value
+//
+//        listen.observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//                mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
+//            }
+//        });
 
 
     }
@@ -148,6 +153,7 @@ public class ImagePickingActivity extends AppCompatActivity
         int id = view.getId();
         System.out.println(id);
         if(id == R.id.BTfetch){
+            clickable = true;
             mainHandler.removeCallbacksAndMessages(null);
             progressBar.setVisibility(View.VISIBLE);
             mDownload_progressText.setVisibility(View.VISIBLE);
@@ -240,4 +246,39 @@ public class ImagePickingActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(clickable){
+            System.out.println("Image picking: " + i);
+
+            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
+            ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            if(currentImage.getColorFilter() == null){
+                currentImage.setColorFilter(MASK_HINT_COLOR, PorterDuff.Mode.SRC_OVER);
+            }
+            else {
+                currentImage.clearColorFilter();
+            }
+
+            if(selectedCell.contains(Integer.valueOf(i)))
+            {
+                selectedCell.remove(Integer.valueOf(i));
+                mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
+
+            }
+            else{
+                selectedCell.add(i);
+                mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
+            }
+//            listen.setValue(selectedCell.size());
+
+
+            if (selectedCell.size()==gameImageNo){
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.putExtra("selectedCells",selectedCell);
+                intent.putExtra("IS_MUTED",IS_MUTED);
+                startActivity(intent);
+            }
+        }
+    }
 }

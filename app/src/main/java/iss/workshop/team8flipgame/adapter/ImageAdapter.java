@@ -73,39 +73,10 @@ public class ImageAdapter extends BaseAdapter{
                 view = layoutInflater.inflate(R.layout.images, null);
             }
             final ImageView imageView1 = view.findViewById(R.id.image);
-            imageView1.setImageBitmap(image.getBitmap());
+            imageView1.setImageBitmap(image.getBitmap());}
 
-            imageView1.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
-                @Override
-                public void onClick(View view) {
-
-
-                    System.out.println("Image picking: " + image.getPosID());
-                    System.out.println(image.getPosID());
-                    if (imageView1.getColorFilter() == null) {
-                        //Log.i("IMAGE_TEST","color filter on ");
-                        imageView1.setColorFilter(MASK_HINT_COLOR, PorterDuff.Mode.SRC_OVER);
-                    }
-                    else imageView1.clearColorFilter();
-
-                    if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
-                    { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));
-                        ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
-                    else{ImagePickingActivity.selectedCell.add(image.getPosID());
-                        ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
-
-
-                    if (ImagePickingActivity.selectedCell.size()==ImagePickingActivity.gameImageNo){
-                        Intent intent = new Intent(mContext, GameActivity.class);
-                        intent.putExtra("selectedCells",ImagePickingActivity.selectedCell);
-                        intent.putExtra("IS_MUTED",ImagePickingActivity.IS_MUTED);
-                        mContext.startActivity(intent);
-                    }
-                }
-            });
-        }
-
+//
+//
         if(mContext instanceof GameActivity){
 
             final Image image = images.get(pos);
@@ -131,45 +102,45 @@ public class ImageAdapter extends BaseAdapter{
                     seleted_view.clear();
                 }
             };
-
-            imageView2.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
-                @Override
-                public void onClick(View view) {
-                    System.out.println("Game Activity " + image.getPosID());
-                    System.out.println(image.getBitmap());
-                    ((ImageView) view).setImageBitmap(image.getBitmap());
-
-                    if(barray.size()<2){
-
-                        System.out.println("pos1");
-                        Bitmap b = image.getBitmap();
-                        view.setClickable(false);
-                        barray.add(b);
-                        seleted_view.add((ImageView) view);
-                    }
-
-                    if(barray.size()==2){
-                        System.out.println("pos2");
-                        if(barray.get(0) == barray.get(1)){
-                            System.out.println("pos2.1");
-                            System.out.println("same");
-                            view.setClickable(false);
-                            seleted_view.get(0).setClickable(false);
-                            barray.clear();
-                            seleted_view.clear();
-                        }
-                        else{
-                            System.out.println("pos2.2");
-                            System.out.println("not same");
-                            handler.postDelayed(runnable,300);
-                        }
-                    }
-                }
-
-
-
-            });
+//
+//            imageView2.setOnClickListener(new View.OnClickListener() {
+//                @RequiresApi(api = Build.VERSION_CODES.N)
+//                @Override
+//                public void onClick(View view) {
+//                    System.out.println("Game Activity " + image.getPosID());
+//                    System.out.println(image.getBitmap());
+//                    ((ImageView) view).setImageBitmap(image.getBitmap());
+//
+//                    if(barray.size()<2){
+//
+//                        System.out.println("pos1");
+//                        Bitmap b = image.getBitmap();
+//                        view.setClickable(false);
+//                        barray.add(b);
+//                        seleted_view.add((ImageView) view);
+//                    }
+//
+//                    if(barray.size()==2){
+//                        System.out.println("pos2");
+//                        if(barray.get(0) == barray.get(1)){
+//                            System.out.println("pos2.1");
+//                            System.out.println("same");
+//                            view.setClickable(false);
+//                            seleted_view.get(0).setClickable(false);
+//                            barray.clear();
+//                            seleted_view.clear();
+//                        }
+//                        else{
+//                            System.out.println("pos2.2");
+//                            System.out.println("not same");
+//                            handler.postDelayed(runnable,300);
+//                        }
+//                    }
+//                }
+//
+//
+//
+//            };
         }
         return view;
     }

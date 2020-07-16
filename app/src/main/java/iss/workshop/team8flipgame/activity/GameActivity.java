@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.Editable;
@@ -17,10 +18,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ import iss.workshop.team8flipgame.adapter.ImageAdapter;
 import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.service.DBService;
 
-public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener {
+public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
     ArrayList<Image> images;
     BGMusicService bgMusicService;
     static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
@@ -44,6 +48,12 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     Button buttonOK;
     EditText nameId;
     TextView txtScore;
+    public ArrayList<Bitmap> barray = new ArrayList<>();
+    ArrayList<ImageView> seleted_view = new ArrayList<>();
+    GridView gridView;
+    ArrayList<Integer> selectedMatch;
+    TextView matches;
+    int matched;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -59,26 +69,27 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+//        variables
         images = new ArrayList<>();
-
+        selectedMatch = new ArrayList<>();
         Intent intent = getIntent();
-
-//        ArrayList<Bitmap> selectedBitmap = intent.getParcelableArrayListExtra("bitmapBytes");
         ArrayList<Integer> selectedCell = intent.getIntegerArrayListExtra("selectedCells");
 
+//        top bar
+        chronometer = findViewById(R.id.chronometer);
+        matches = findViewById(R.id.matches);
 
+//        Grid view
         for(int i : selectedCell){
             images .add (ImagePickingActivity.selectedImage.get(i));
             images .add (ImagePickingActivity.selectedImage.get(i));
-//            images.add(selectedBitmap.get(i));
         }
         Collections.shuffle(images);
-        chronometer = findViewById(R.id.chronometer);
-
-        GridView gridView =findViewById(R.id.gridViewGame);
+        gridView =findViewById(R.id.gridViewGame);
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);
+        gridView.setOnItemClickListener(this);
 
         //Bianca Music Service
         IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
@@ -145,7 +156,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
-            dialogBox();
+        dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
@@ -199,4 +210,67 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         });
     }
 
+    final Handler handler = new Handler();
+    final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            seleted_view.get(1).setImageBitmap(null);
+            seleted_view.get(0).setImageBitmap(null);
+            barray.clear();
+            seleted_view.clear();
+        }
+    };
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(!selectedMatch.contains(Integer.valueOf(i))){
+            System.out.println("Game Activity " + i);
+
+            Image image = images.get(i);
+            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
+            ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            currentImage.setImageBitmap(image.getBitmap());
+
+            if(barray.size()<2){
+                Bitmap b = image.getBitmap();
+                barray.add(b);
+                selectedMatch.add(i);
+                seleted_view.add(currentImage);
+            }
+
+            if(barray.size()==2){
+                System.out.println("pos2");
+                if(barray.get(0) == barray.get(1)){
+                    System.out.println("pos2.1");
+                    System.out.println("same");
+                    barray.clear();
+                    seleted_view.clear();
+                    matched++;
+                    numOfAttempts++;
+                    matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
+                    if(matched==NUM_OF_CARDS){
+                        isGameFinished=true;
+                        chronometer.stop();
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        System.out.println(elapsedMillis);
+
+//                        dialogBox();
+//                        finishedGame(nameId.getText().toString(),calculateScore((int)elapsedMillis,numOfAttempts));
+                    }
+                }
+                else{
+                    System.out.println("pos2.2");
+                    System.out.println("not same");
+                    numOfAttempts++;
+                    selectedMatch.remove(selectedMatch.size()-1);
+                    selectedMatch.remove(selectedMatch.size()-1);
+                    handler.postDelayed(runnable,300);
+                }
+            }
+        }
+    }
 }

@@ -10,7 +10,7 @@
     android:id="@+id/image"
     android:scaleType="fitXY"
     android:adjustViewBounds="false"
-    android:clickable="true"
+    android:clickable="false"
     android:background="@drawable/bg"
     />
 
