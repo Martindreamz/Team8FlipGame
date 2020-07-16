@@ -133,6 +133,7 @@ public class ImagePickingActivity extends AppCompatActivity
 
     }
 
+
     //gettsers and setters
     public static int getImageNo() {
         return imageNo;
@@ -155,6 +156,7 @@ public class ImagePickingActivity extends AppCompatActivity
             mDownload_progressText.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
             System.out.println("start scrapping");
             scrapImage();
+
         }
     }
 

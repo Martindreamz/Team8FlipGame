@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class ImageAdapter extends BaseAdapter{
     private  Context mContext;
     private  ArrayList<Image> images;
     public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<View> seleted_view = new ArrayList<>();
+    ArrayList<ImageView> seleted_view = new ArrayList<>();
     boolean disableFlip;
 
     private static final int NUM_OF_CARDS = 6;
@@ -64,9 +65,9 @@ public class ImageAdapter extends BaseAdapter{
     @Override
     public View getView(int pos, View view, ViewGroup viewGroup) {
         if(mContext instanceof ImagePickingActivity){
+
             final Image image = images.get(pos);
             image.setPosID(pos);
-            final int position = pos;
             if (view == null) {
                 final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 view = layoutInflater.inflate(R.layout.images, null);
@@ -79,6 +80,7 @@ public class ImageAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View view) {
 
+
                     System.out.println("Image picking: " + image.getPosID());
                     System.out.println(image.getPosID());
                     if (imageView1.getColorFilter() == null) {
@@ -86,9 +88,10 @@ public class ImageAdapter extends BaseAdapter{
                         imageView1.setColorFilter(MASK_HINT_COLOR, PorterDuff.Mode.SRC_OVER);
                     }
                     else imageView1.clearColorFilter();
+
                     if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
                     { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));
-                    ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
+                        ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
                     else{ImagePickingActivity.selectedCell.add(image.getPosID());
                         ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
 
@@ -107,8 +110,6 @@ public class ImageAdapter extends BaseAdapter{
 
             final Image image = images.get(pos);
             image.setPosID(pos);
-            final int position = pos;
-            image.setPosID(position);
 
             if (view == null) {
                 final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
@@ -118,34 +119,55 @@ public class ImageAdapter extends BaseAdapter{
             final ImageView imageView2 =view.findViewById(R.id.image2);
             //imageView2.setImageBitmap(image.getBitmap());
 
+            final Handler handler = new Handler();
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    seleted_view.get(1).setImageBitmap(null);
+                    seleted_view.get(1).setClickable(true);
+                    seleted_view.get(0).setClickable(true);
+                    seleted_view.get(0).setImageBitmap(null);
+                    barray.clear();
+                    seleted_view.clear();
+                }
+            };
+
             imageView2.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
-
                 @Override
                 public void onClick(View view) {
                     System.out.println("Game Activity " + image.getPosID());
+                    System.out.println(image.getBitmap());
+                    ((ImageView) view).setImageBitmap(image.getBitmap());
 
                     if(barray.size()<2){
+
+                        System.out.println("pos1");
                         Bitmap b = image.getBitmap();
-                        imageView2.setImageBitmap(image.getBitmap());
+                        view.setClickable(false);
                         barray.add(b);
-                        seleted_view.add(view);}
+                        seleted_view.add((ImageView) view);
+                    }
+
                     if(barray.size()==2){
+                        System.out.println("pos2");
                         if(barray.get(0) == barray.get(1)){
+                            System.out.println("pos2.1");
                             System.out.println("same");
-                            barray.clear();
                             view.setClickable(false);
                             seleted_view.get(0).setClickable(false);
-                        }
-                        else{
-                            System.out.println("not same");
-                            imageView2.setImageBitmap(null);
                             barray.clear();
                             seleted_view.clear();
                         }
+                        else{
+                            System.out.println("pos2.2");
+                            System.out.println("not same");
+                            handler.postDelayed(runnable,300);
+                        }
                     }
-
                 }
+
+
 
             });
         }
