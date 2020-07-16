@@ -61,7 +61,6 @@ public class LeaderBoardActivity extends AppCompatActivity
     @Override
     public void onServiceDisconnected(ComponentName name){
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
-
     }
     //Bianca Lifecycle
     @Override

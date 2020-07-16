@@ -44,7 +44,7 @@ public class ImagePickingActivity extends AppCompatActivity
     public static int gameImageNo = 6;
 
     BGMusicService bgMusicService;
-    Boolean IS_MUTED; //Setting of BG Music
+    public static Boolean IS_MUTED; //Setting of BG Music
 
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
