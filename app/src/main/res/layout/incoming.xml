@@ -7,8 +7,6 @@
     android:gravity="top">
     //tools:context=".HomeActivity"
 
-
-
     <ImageButton
         android:id="@+id/soundToggle"
         android:layout_width="wrap_content"
@@ -24,7 +22,7 @@
         android:layout_marginBottom="40dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:text="Play" />
+        android:text="@string/play" />
 
     <Button
         android:id="@+id/leaderBoard"
@@ -33,7 +31,7 @@
         android:layout_marginBottom="40dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:text="Leader Board"/>
+        android:text="@string/leader_board"/>
 
     <Button
         android:id="@+id/credits"
@@ -42,6 +40,6 @@
         android:layout_marginBottom="40dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center|bottom"
-        android:text="Credits" />
+        android:text="@string/credits" />
 
 </LinearLayout>
