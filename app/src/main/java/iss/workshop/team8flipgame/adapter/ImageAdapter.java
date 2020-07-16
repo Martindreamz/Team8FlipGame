@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -39,6 +40,7 @@ public class ImageAdapter extends BaseAdapter{
     int numOfAttempts = 0;
     int totalTime = 0;
 
+    private static int MASK_HINT_COLOR = 0x99ffffff;
     public ImageAdapter(Context mContext, ArrayList<Image> images){
         this.mContext = mContext;
         this.images=images;
@@ -79,13 +81,11 @@ public class ImageAdapter extends BaseAdapter{
 
                     System.out.println("Image picking: " + image.getPosID());
                     System.out.println(image.getPosID());
-                    if (imageView.getBackground() == null) {
-                        Drawable highlight = mContext.getResources().getDrawable(R.drawable.background_border);
-                        imageView.setBackground(highlight);
+                    if (imageView1.getColorFilter() == null) {
+                        //Log.i("IMAGE_TEST","color filter on ");
+                        imageView1.setColorFilter(MASK_HINT_COLOR, PorterDuff.Mode.SRC_OVER);
                     }
-                    else{
-                        imageView.setBackground(null);
-                    }
+                    else imageView1.clearColorFilter();
                     if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
                     { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));}
                     else{ImagePickingActivity.selectedCell.add(image.getPosID());}
