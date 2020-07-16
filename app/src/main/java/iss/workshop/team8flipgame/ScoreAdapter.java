@@ -16,26 +16,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import iss.workshop.team8flipgame.model.Score;
+
 public class ScoreAdapter extends ArrayAdapter {
 
     Context context;
 
     //Test
-    List<String> names = new ArrayList<>();
-    List<Integer> scores = new ArrayList<>();
+    List<Score> scores = new ArrayList<>();
 
 
-    public ScoreAdapter(@NonNull Context context, int resource) {
+    public ScoreAdapter(@NonNull Context context, int resource, List<Score> scores) {
         super(context, resource);
         this.context = context;
+        this.scores = scores;
 
-        names.add("Daryl");
-        scores.add(123);
+        //text
+        Score score = new Score("Daryl", 123);
+        scores.add(score);
+        Score score1 = new Score("Daryl1", 122434);
+        scores.add(score1);
 
-        names.add("Daryl1");
-        scores.add(345);
-
-        for(int i=0; i<names.size(); i++){
+        for(int i=0; i<scores.size(); i++){
             add(null);
         }
     }
@@ -48,10 +50,10 @@ public class ScoreAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.leaderboard_row, null);
 
         TextView name = convertView.findViewById(R.id.nameTxt);
-        name.setText(names.get(position));
+        name.setText(scores.get(position).getName());
 
         TextView score = convertView.findViewById(R.id.scoreTxt);
-        score.setText(scores.get(position));
+        score.setText(scores.get(position).getScore());
 
         return convertView;
     }
