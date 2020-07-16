@@ -109,6 +109,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             chronometer.start();
         }
     }
+
     //Bianca Lifecycle
     @Override
     public void onPause(){

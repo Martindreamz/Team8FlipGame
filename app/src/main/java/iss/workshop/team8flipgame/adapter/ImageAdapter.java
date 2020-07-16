@@ -112,11 +112,11 @@ public class ImageAdapter extends BaseAdapter{
 
             if (view == null) {
                 final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                view = layoutInflater.inflate(R.layout.images, null);
+                view = layoutInflater.inflate(R.layout.images2, null);
             }
 
-            final ImageView imageView2 =view.findViewById(R.id.image);
-            imageView2.setImageBitmap(image.getBitmap());
+            final ImageView imageView2 =view.findViewById(R.id.image2);
+            //imageView2.setImageBitmap(image.getBitmap());
 
             imageView2.setOnClickListener(new View.OnClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -139,6 +139,7 @@ public class ImageAdapter extends BaseAdapter{
                         }
                         else{
                             System.out.println("not same");
+                            imageView2.setImageBitmap(null);
                             barray.clear();
                             seleted_view.clear();
                         }

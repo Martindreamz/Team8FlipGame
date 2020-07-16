@@ -81,7 +81,8 @@ public class LeaderBoardActivity extends AppCompatActivity
     @Override
     public void onDestroy(){
         super.onDestroy();
-        unbindService(this);// unbindService
+        if(bgMusicService!=null)
+            unbindService(this);// unbindService
         // end everything
     }
 }
