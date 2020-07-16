@@ -50,7 +50,7 @@ public class ImagePickingActivity extends AppCompatActivity
     TextView download_progress;
 
     BGMusicService bgMusicService;
-    Boolean IS_MUTED = false ; //Setting of BG Music
+    Boolean IS_MUTED; //Setting of BG Music
 
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
@@ -99,8 +99,12 @@ public class ImagePickingActivity extends AppCompatActivity
         download_progress = findViewById(R.id.download_textview);
 
         //Bianca Music Service
-        Intent music = new Intent(this, BGMusicService.class);
-        bindService(music, this, BIND_AUTO_CREATE);
+        Intent intent = getIntent();
+        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        if (!IS_MUTED) {
+            Intent music = new Intent(this, BGMusicService.class);
+            bindService(music, this, BIND_AUTO_CREATE);
+        }
 
     }
 
@@ -162,7 +166,7 @@ public class ImagePickingActivity extends AppCompatActivity
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
-        if(binder != null && !IS_MUTED) {
+        if(binder != null) {
             bgMusicService = musicBinder.getService();
             bgMusicService.playMusic("MENU");
             Log.i("MusicLog", "BGMusicService Connected, state: play MENU.");
@@ -173,4 +177,32 @@ public class ImagePickingActivity extends AppCompatActivity
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
 
     }
+
+    //Bianca Lifecycle
+    @Override
+    public void onPause(){
+        super.onPause();
+        // pause music
+        if(bgMusicService!=null) bgMusicService.pause();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        // restore
+        if(bgMusicService!=null) bgMusicService.resume();
+        else if(!IS_MUTED) {
+            Intent music = new Intent(this, BGMusicService.class);
+            bindService(music, this, BIND_AUTO_CREATE);
+        }
+
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        unbindService(this);// unbindService
+        // end everything
+    }
+
+
 }

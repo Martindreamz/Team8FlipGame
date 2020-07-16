@@ -40,15 +40,19 @@ public class LeaderBoardActivity extends AppCompatActivity
         }
 
         //Bianca Music Service
-        Intent music = new Intent(this, BGMusicService.class);
-        bindService(music, this, BIND_AUTO_CREATE);
+        Intent intent = getIntent();
+        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        if (!IS_MUTED) {
+            Intent music = new Intent(this, BGMusicService.class);
+            bindService(music, this, BIND_AUTO_CREATE);
+        }
     }
 
     //Bianca Music Service
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
-        if(binder != null && !IS_MUTED) {
+        if(binder != null) {
             bgMusicService = musicBinder.getService();
             bgMusicService.playMusic("LEADER_BOARD");
             Log.i("MusicLog", "BGMusicService Connected, state: play LeaderBoard.");
@@ -58,5 +62,27 @@ public class LeaderBoardActivity extends AppCompatActivity
     public void onServiceDisconnected(ComponentName name){
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
 
+    }
+    //Bianca Lifecycle
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(bgMusicService!=null) bgMusicService.pause();// pause music
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        // restore
+        if(bgMusicService!=null) bgMusicService.resume();
+        else if(!IS_MUTED) {
+            Intent music = new Intent(this, BGMusicService.class);
+            bindService(music, this, BIND_AUTO_CREATE);
+        }
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        unbindService(this);// unbindService
+        // end everything
     }
 }
