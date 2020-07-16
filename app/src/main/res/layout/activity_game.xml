@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/matches"
-            android:text="0/10 matches"
+            android:text="@string/matches"
             android:layout_gravity="left"
             android:layout_weight="0.5"/>
 

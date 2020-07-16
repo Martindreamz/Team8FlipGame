@@ -14,7 +14,7 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="https://stocksnap.io/search/cat"
+            android:text="@string/url"
             android:id="@+id/ETurl"
             android:layout_weight="0.7"
             android:gravity="center"
@@ -22,7 +22,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Fetch"
+            android:text="@string/fetchBtn"
             android:id="@+id/BTfetch"
             android:layout_weight="0.3"
             android:gravity="center"/>

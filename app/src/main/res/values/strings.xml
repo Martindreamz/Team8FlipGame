@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">Team8FlipGame</string>
     <string name="score">SCORE</string>
-    <string name="download_progress">Downloading 0 of 20 images…</string>
+    <string name="download_progress">Downloading 0 of 20 images...</string>
+    <string name="credits">Credits</string>
+    <string name="members">Bianca Cao Zengyu \nDaryl Kouk Leong Jun \n Martin Ng Hong Yi \n Pwint Theingi Aung Win
+\n Wutt Yee Hnin Lwin \n Wu Yirui</string>
+    <string name="Licenses">Licenses</string>
+    <string name="lincense_detail">License details etc</string>
+    <string name="matches">0/10 matches</string>
+    <string name="url">https://stocksnap.io/search/cat</string>
+    <string name="fetchBtn">Fetch</string>
+    <string name="play">Play</string>
+    <string name="leader_board">Leader Board</string>
+    <string name="name">Name</string>
+    <string name="credit">Credit</string>
     <string name="selected_images">0 out of 6 images selected</string>
 </resources>

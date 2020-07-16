@@ -2,6 +2,12 @@ package iss.workshop.team8flipgame.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -34,6 +40,7 @@ public class ImageAdapter extends BaseAdapter{
     int numOfAttempts = 0;
     int totalTime = 0;
 
+    private static int MASK_HINT_COLOR = 0x99ffffff;
     public ImageAdapter(Context mContext, ArrayList<Image> images){
         this.mContext = mContext;
         this.images=images;
@@ -73,6 +80,12 @@ public class ImageAdapter extends BaseAdapter{
                 public void onClick(View view) {
 
                     System.out.println("Image picking: " + image.getPosID());
+                    System.out.println(image.getPosID());
+                    if (imageView1.getColorFilter() == null) {
+                        //Log.i("IMAGE_TEST","color filter on ");
+                        imageView1.setColorFilter(MASK_HINT_COLOR, PorterDuff.Mode.SRC_OVER);
+                    }
+                    else imageView1.clearColorFilter();
                     if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
                     { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));
                     ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
@@ -83,6 +96,7 @@ public class ImageAdapter extends BaseAdapter{
                     if (ImagePickingActivity.selectedCell.size()==ImagePickingActivity.gameImageNo){
                         Intent intent = new Intent(mContext, GameActivity.class);
                         intent.putExtra("selectedCells",ImagePickingActivity.selectedCell);
+                        intent.putExtra("IS_MUTED",ImagePickingActivity.IS_MUTED);
                         mContext.startActivity(intent);
                     }
                 }
@@ -92,6 +106,7 @@ public class ImageAdapter extends BaseAdapter{
         if(mContext instanceof GameActivity){
 
             final Image image = images.get(pos);
+            image.setPosID(pos);
             final int position = pos;
             image.setPosID(position);
 
