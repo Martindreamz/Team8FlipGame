@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:src="@android:drawable/ic_media_play"
-        android:background="#ff0000" />
+        android:background="@color/red"/>
 
     <Button
         android:id="@+id/play"
