@@ -13,8 +13,10 @@
         android:theme="@style/AppTheme">
         <service android:name=".service.BGMusicService" />
         <activity android:name=".activity.GameActivity"></activity>
+        <activity android:name=".activity.ImagePickingActivity"></activity>
         <activity android:name=".activity.LeaderBoardActivity"></activity>
-        <activity android:name=".activity.ImagePickingActivity">
+
+        <activity android:name=".activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
