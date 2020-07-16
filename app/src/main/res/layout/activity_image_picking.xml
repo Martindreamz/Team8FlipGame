@@ -6,27 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".activity.ImagePickingActivity"
     android:orientation="vertical">
-<androidx.appcompat.widget.LinearLayoutCompat
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
 
->
-    <EditText
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="https://stocksnap.io/search/cat"
-        android:id="@+id/ETurl"
-        android:layout_weight="0.7"
-        android:gravity="center"/>
-    <Button
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Fetch"
-        android:id="@+id/BTfetch"
-        android:layout_weight="0.3"
-        android:gravity="center"/>
-</androidx.appcompat.widget.LinearLayoutCompat>
+        >
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/url"
+            android:id="@+id/ETurl"
+            android:layout_weight="0.7"
+            android:gravity="center"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/fetchBtn"
+            android:id="@+id/BTfetch"
+            android:layout_weight="0.3"
+            android:gravity="center"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <GridView
         android:layout_width="match_parent"
@@ -39,6 +39,20 @@
         android:horizontalSpacing="0dip"
         android:scrollbars="none"
         android:fadeScrollbars="true"
-     />
+        />
+
+    <ProgressBar
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/download_progress"
+        style="@android:style/Widget.Material.Light.ProgressBar.Horizontal"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:id="@+id/download_textview"
+        android:layout_gravity="center"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

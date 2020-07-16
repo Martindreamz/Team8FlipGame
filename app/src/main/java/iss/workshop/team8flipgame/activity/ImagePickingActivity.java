@@ -1,12 +1,14 @@
 package iss.workshop.team8flipgame.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -42,6 +46,8 @@ public class ImagePickingActivity extends AppCompatActivity
     public static ArrayList<Integer> selectedCell = new ArrayList<>();
     public static ArrayList<Image> selectedImage = new ArrayList<>();
     public static int gameImageNo = 6;
+    ProgressBar progressBar;
+    TextView download_progress;
 
     BGMusicService bgMusicService;
     public static Boolean IS_MUTED; //Setting of BG Music
@@ -55,6 +61,9 @@ public class ImagePickingActivity extends AppCompatActivity
             currentImage.setScaleType(ImageView.ScaleType.FIT_XY);
             currentImage.setImageBitmap(((Image) msg.obj).getBitmap());
             selectedImage.add(((Image)msg.obj));
+            download_progress.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
+            progressBar.setProgress(progressBar.getProgress()+5);
+
             childPos++;
             System.out.println(childPos);
             if(childPos==getImageNo()){
@@ -63,16 +72,18 @@ public class ImagePickingActivity extends AppCompatActivity
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_picking);
 
-        fetch = findViewById(R.id.BTfetch);
+        //for top bar
         urlReader = findViewById(R.id.ETurl);
-
+        fetch = findViewById(R.id.BTfetch);
         fetch.setOnClickListener(this);
 
+        //for gridview
         for(int i = 0;i<imageNo;i++){
             images.add(new Image(null,i));
         }
@@ -80,6 +91,12 @@ public class ImagePickingActivity extends AppCompatActivity
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);
+
+        //for bottom bar
+        progressBar = findViewById(R.id.download_progress);
+        progressBar.setMax(100);
+        progressBar.setMin(0);
+        download_progress = findViewById(R.id.download_textview);
 
         //Bianca Music Service
         Intent intent = getIntent();
@@ -103,8 +120,13 @@ public class ImagePickingActivity extends AppCompatActivity
         int id = view.getId();
         System.out.println(id);
         if(id == R.id.BTfetch){
+//            imageScraper.cancel(true);
+            mainHandler.removeCallbacksAndMessages(null);
+            childPos = 0;
             selectedCell.clear();
             selectedImage.clear();
+            progressBar.setProgress(0);
+            download_progress.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
             System.out.println("start scrapping");
             scrapImage();
 
