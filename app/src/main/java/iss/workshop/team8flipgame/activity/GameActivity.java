@@ -48,17 +48,37 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         gridView.setVerticalScrollBarEnabled(false);
 
         //Bianca Music Service
-        Log.i("MusicLog", "Already in game activity");
-        Intent music = new Intent(this, BGMusicService.class);
-        bindService(music, this, BIND_AUTO_CREATE);
+        //IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        IS_MUTED = false; //Temporary HardCode
+        if (!IS_MUTED) {
+            Intent music = new Intent(this, BGMusicService.class);
+            bindService(music, this, BIND_AUTO_CREATE);
+        }
 
+    }
+
+    //Bianca Lifecycle
+    @Override
+    public void onPause(){
+        super.onPause();
+        // send notification : Want to continue or end the current Game
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        // restore game
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        // end everything
     }
 
     //Bianca Music Service
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
-        if(binder != null && !IS_MUTED) {
+        if(binder != null) {
             bgMusicService = musicBinder.getService();
             bgMusicService.playMusic("GAME");
             Log.i("MusicLog", "BGMusicService Connected, state: play GAME.");
