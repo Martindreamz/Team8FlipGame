@@ -4,12 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.health.SystemHealthManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -21,7 +26,8 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagePickingActivity extends AppCompatActivity implements View.OnClickListener, ImageScraper.ICallback{
+public class ImagePickingActivity extends AppCompatActivity
+        implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection {
 
     ArrayList<Image> images = new ArrayList<>();
     Button fetch;
@@ -35,6 +41,9 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
     static ArrayList<Integer> selectedCell = new ArrayList<>();
     static ArrayList<Image> selectedImage = new ArrayList<>();
     static int gameImageNo = 6;
+
+    BGMusicService bgMusicService;
+    Boolean IS_MUTED = false ; //Setting of BG Music
 
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
@@ -70,6 +79,10 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);
+
+        //Bianca Music Service
+        Intent music = new Intent(this, BGMusicService.class);
+        bindService(music, this, BIND_AUTO_CREATE);
 
     }
 
@@ -119,6 +132,22 @@ public class ImagePickingActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void makeToast(String message) {
+
+    }
+
+    //Bianca Music Service
+    //@Override
+    public void onServiceConnected(ComponentName name, IBinder binder){
+        BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
+        if(binder != null && !IS_MUTED) {
+            bgMusicService = musicBinder.getService();
+            bgMusicService.playMusic("MENU");
+            Log.i("MusicLog", "BGMusicService Connected, state: play MENU.");
+        }
+    }
+    @Override
+    public void onServiceDisconnected(ComponentName name){
+        Log.i("MusicLog", "BGMusicService DIS-Connected.");
 
     }
 }
