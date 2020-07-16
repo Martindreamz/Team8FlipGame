@@ -64,7 +64,7 @@ public class ImageAdapter extends BaseAdapter{
                 final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 view = layoutInflater.inflate(R.layout.images, null);
             }
-            final ImageView imageView1 = (ImageView)view.findViewById(R.id.image);
+            final ImageView imageView1 = view.findViewById(R.id.image);
             imageView1.setImageBitmap(image.getBitmap());
 
             imageView1.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +74,11 @@ public class ImageAdapter extends BaseAdapter{
 
                     System.out.println("Image picking: " + image.getPosID());
                     if(ImagePickingActivity.selectedCell.contains(Integer.valueOf(image.getPosID())))
-                    { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));}
-                    else{ImagePickingActivity.selectedCell.add(image.getPosID());}
+                    { ImagePickingActivity.selectedCell.remove(Integer.valueOf(image.getPosID()));
+                    ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
+                    else{ImagePickingActivity.selectedCell.add(image.getPosID());
+                        ImagePickingActivity.listen.setValue(ImagePickingActivity.selectedCell.size());}
+
 
                     if (ImagePickingActivity.selectedCell.size()==ImagePickingActivity.gameImageNo){
                         Intent intent = new Intent(mContext, GameActivity.class);
@@ -97,7 +100,7 @@ public class ImageAdapter extends BaseAdapter{
                 view = layoutInflater.inflate(R.layout.images, null);
             }
 
-            final ImageView imageView2 = (ImageView)view.findViewById(R.id.image);
+            final ImageView imageView2 =view.findViewById(R.id.image);
             imageView2.setImageBitmap(image.getBitmap());
 
             imageView2.setOnClickListener(new View.OnClickListener() {

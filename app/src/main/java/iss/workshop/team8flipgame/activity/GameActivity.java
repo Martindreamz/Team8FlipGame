@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import iss.workshop.team8flipgame.model.Score;
 import iss.workshop.team8flipgame.service.BGMusicService;
@@ -68,10 +69,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             images .add (ImagePickingActivity.selectedImage.get(i));
 //            images.add(selectedBitmap.get(i));
         }
-//        Collections.shuffle(images);
+        Collections.shuffle(images);
         chronometer = findViewById(R.id.chronometer);
 
-        GridView gridView = (GridView) findViewById(R.id.gridViewGame);
+        GridView gridView =findViewById(R.id.gridViewGame);
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);

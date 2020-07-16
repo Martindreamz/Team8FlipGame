@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Team8FlipGame</string>
     <string name="score">SCORE</string>
-    <string name="download_progress">Downloading 0 of 20 images...</string>
+    <string name="download_progress">Downloading 0 of 20 images…</string>
+    <string name="selected_images">0 out of 6 images selected</string>
 </resources>
