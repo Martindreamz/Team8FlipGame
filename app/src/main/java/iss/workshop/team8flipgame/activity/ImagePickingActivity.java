@@ -1,4 +1,4 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,24 +7,25 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.health.SystemHealthManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import iss.workshop.team8flipgame.service.BGMusicService;
+import iss.workshop.team8flipgame.model.*;
+import iss.workshop.team8flipgame.adapter.ImageAdapter;
+import iss.workshop.team8flipgame.ImageScraper;
+import iss.workshop.team8flipgame.R;
 
 public class ImagePickingActivity extends AppCompatActivity
         implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection {
@@ -38,9 +39,9 @@ public class ImagePickingActivity extends AppCompatActivity
     GridView gridView;
     ImageAdapter imageAdapter;
     int childPos=0;
-    static ArrayList<Integer> selectedCell = new ArrayList<>();
-    static ArrayList<Image> selectedImage = new ArrayList<>();
-    static int gameImageNo = 6;
+    public static ArrayList<Integer> selectedCell = new ArrayList<>();
+    public static ArrayList<Image> selectedImage = new ArrayList<>();
+    public static int gameImageNo = 6;
 
     BGMusicService bgMusicService;
     Boolean IS_MUTED = false ; //Setting of BG Music

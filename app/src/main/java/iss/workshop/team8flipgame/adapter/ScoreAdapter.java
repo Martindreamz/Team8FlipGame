@@ -1,4 +1,4 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.model.Score;
 
 public class ScoreAdapter extends ArrayAdapter {

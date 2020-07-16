@@ -1,4 +1,4 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,13 +8,15 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
 
 import java.util.List;
 
+import iss.workshop.team8flipgame.service.BGMusicService;
+import iss.workshop.team8flipgame.R;
+import iss.workshop.team8flipgame.adapter.ScoreAdapter;
 import iss.workshop.team8flipgame.model.Score;
-import iss.workshop.team8flipgame.repo.DBService;
+import iss.workshop.team8flipgame.service.DBService;
 
 public class LeaderBoardActivity extends AppCompatActivity
             implements ServiceConnection {

@@ -1,21 +1,21 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.GridView;
 
-import java.io.FileInputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
+
+import iss.workshop.team8flipgame.service.BGMusicService;
+import iss.workshop.team8flipgame.R;
+import iss.workshop.team8flipgame.adapter.ImageAdapter;
+import iss.workshop.team8flipgame.model.Image;
 
 public class GameActivity extends AppCompatActivity implements ServiceConnection {
     ArrayList<Image> images;

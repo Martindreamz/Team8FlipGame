@@ -1,4 +1,4 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.model;
 
 import android.graphics.Bitmap;
 

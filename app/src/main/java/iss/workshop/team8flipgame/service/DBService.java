@@ -1,4 +1,4 @@
-package iss.workshop.team8flipgame.repo;
+package iss.workshop.team8flipgame.service;
 
 import android.content.ContentValues;
 import android.content.Context;

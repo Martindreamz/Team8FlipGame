@@ -1,14 +1,13 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.service;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Switch;
+
+import iss.workshop.team8flipgame.R;
 
 public class BGMusicService extends Service {
     MediaPlayer BGMusicPlayer;
@@ -20,7 +19,7 @@ public class BGMusicService extends Service {
     //use binder to connect service and activity
     private final IBinder binder = new LocalBinder();
     public class LocalBinder extends Binder {
-        BGMusicService getService(){
+        public BGMusicService getService(){
             return BGMusicService.this;
         }
     }

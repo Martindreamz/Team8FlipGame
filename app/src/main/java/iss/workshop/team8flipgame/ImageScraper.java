@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
+import iss.workshop.team8flipgame.activity.ImagePickingActivity;
+import iss.workshop.team8flipgame.model.Image;
+
 public class ImageScraper extends AsyncTask<String, Image, Void>{
 
     ICallback callback;
@@ -28,7 +31,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         }
         ArrayList<URL> imageURLs = imageURLs(html);
 
-        if(imageURLs.size()<ImagePickingActivity.getImageNo()){
+        if(imageURLs.size()< ImagePickingActivity.getImageNo()){
             if(this.callback != null) callback.makeToast("There are only "+imageURLs.size()+" possible images.  Please try another search term.");
             return null;
         }

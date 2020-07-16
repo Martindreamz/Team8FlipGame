@@ -1,22 +1,22 @@
-package iss.workshop.team8flipgame;
+package iss.workshop.team8flipgame.adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
-import org.w3c.dom.Text;
-
-import java.io.Serializable;
 import java.util.ArrayList;
+
+import iss.workshop.team8flipgame.activity.GameActivity;
+import iss.workshop.team8flipgame.R;
+import iss.workshop.team8flipgame.activity.ImagePickingActivity;
+import iss.workshop.team8flipgame.model.Image;
 
 public class ImageAdapter extends BaseAdapter{
 
@@ -67,7 +67,7 @@ public class ImageAdapter extends BaseAdapter{
                     else{ImagePickingActivity.selectedCell.add(image.getPosID());}
 
                     if (ImagePickingActivity.selectedCell.size()==ImagePickingActivity.gameImageNo){
-                        Intent intent = new Intent(mContext,GameActivity.class);
+                        Intent intent = new Intent(mContext, GameActivity.class);
                         intent.putExtra("selectedCells",ImagePickingActivity.selectedCell);
                         mContext.startActivity(intent);
                     }
