@@ -30,12 +30,12 @@ public class BGMusicService extends Service {
         Log.i("MusicLog", "BackgroundMusicService -> onBind, Thread: " + Thread.currentThread().getName());
         return binder;
     }
-
     @Override
     public boolean onUnbind(Intent intent){
         Log.i("MusicLog", "BackgroundMusicService -> onUnBind");
         return super.onUnbind(intent);
     }
+
     @Override
     public void onDestroy() {
         Log.i("MusicLog", "BackgroundMusicService -> onDestroy");
@@ -70,12 +70,10 @@ public class BGMusicService extends Service {
     }
 
     public void stop() {
-        if (BGMusicPlayer != null && BGMusicPlayer.isPlaying()) {//只有播放器已初始化并且正在播放才可暂停
+        if (BGMusicPlayer != null && BGMusicPlayer.isPlaying()) {
             BGMusicPlayer.stop();
-        } else { return;
         }
     }
-
     public void mute() {
         if (BGMusicPlayer != null && BGMusicPlayer.isPlaying()) {
             BGMusicPlayer.stop();
@@ -83,26 +81,6 @@ public class BGMusicService extends Service {
             BGMusicPlayer = null;
         }
     }
-/*
-    public void playMenuMusic(){
-        if(BGMusicPlayer != null) BGMusicPlayer.reset();//release the resources
-        BGMusicPlayer = MediaPlayer.create(this, R.raw.menu);
-        BGMusicPlayer.setLooping(true);
-        BGMusicPlayer.start();
-    }
-    public void playGameMusic(){
-        if(BGMusicPlayer != null) BGMusicPlayer.reset();
-        BGMusicPlayer = MediaPlayer.create(this, R.raw.rainbow);
-        BGMusicPlayer.setLooping(true);
-        BGMusicPlayer.start();
-    }
-    public void playLBMusic(){
-        if(BGMusicPlayer != null) BGMusicPlayer.reset();
-        BGMusicPlayer = MediaPlayer.create(this,R.raw.leader_board);
-        BGMusicPlayer.setLooping(true);
-        BGMusicPlayer.start();
-    }*/
-
 
 }
 
