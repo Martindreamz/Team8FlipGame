@@ -48,8 +48,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         gridView.setVerticalScrollBarEnabled(false);
 
         //Bianca Music Service
-        //IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
-        IS_MUTED = false; //Temporary HardCode
+        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
