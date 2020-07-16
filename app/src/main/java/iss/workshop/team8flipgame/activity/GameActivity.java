@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     View dialogView;
     Button buttonOK;
     EditText nameId;
+    TextView txtScore;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -49,6 +51,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     private Chronometer chronometer;
     private boolean isGameFinished = false;
     private long totalTime = 0;
+    private int totalScore=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +92,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
     }
 
-    public void finishedGame(int totalTime,int numOfAttempts){
-        int totalScore = calculateScore(60,15);
-        Score scoreObj = new Score("Theingi",totalScore);
+    public void finishedGame(String name ,int totalScore){
+        Score scoreObj = new Score(name,totalScore);
         DBService db = new DBService(this);
         db.addScore(scoreObj);
     }
@@ -144,10 +146,16 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
-            String name = nameId.getText().toString();
-            System.out.println(name);
+            String playerName = nameId.getText().toString();
+
+            finishedGame(playerName,totalScore);
+
+            System.out.println(playerName);
             alertDialog.dismiss();
             System.out.println("it is dismissed");
+
+            Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
+            startActivity(intentForLeaderBoard);
         }
     }
 
@@ -158,6 +166,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         builder.setView(dialogView);
         alertDialog = builder.create();
         alertDialog.show();
+
+        txtScore = findViewById(R.id.txtScore);
+        totalScore = calculateScore(60,15);
+        txtScore.setText(totalScore+ " points");
 
         final Button buttonOK = dialogView.findViewById(R.id.btnOK);
         buttonOK.setOnClickListener(this);
