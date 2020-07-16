@@ -7,6 +7,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+
 import iss.workshop.team8flipgame.R;
 
 public class BGMusicService extends Service {
@@ -68,11 +72,20 @@ public class BGMusicService extends Service {
         BGMusicPlayer.start();
     }
 
-    public void stop() {
+
+    public void pause() {
         if (BGMusicPlayer != null && BGMusicPlayer.isPlaying()) {
-            BGMusicPlayer.stop();
+            BGMusicPlayer.pause();
         }
     }
+
+
+    public void resume() {
+        if (BGMusicPlayer != null && !BGMusicPlayer.isPlaying()) {
+            BGMusicPlayer.start();
+        }
+    }
+
     public void mute() {
         if (BGMusicPlayer != null && BGMusicPlayer.isPlaying()) {
             BGMusicPlayer.stop();
