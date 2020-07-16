@@ -52,9 +52,9 @@ public class HomeActivity extends AppCompatActivity
             Intent intent = new Intent(this, LeaderBoardActivity.class);
             startActivity(intent);
         }
-//        else if (id == R.id.credits) {
-//            Intent intent = new Intent(this,CreditsActivity.class);
-//            startActivity(intent);
-//        }
+        else if (id == R.id.credits) {
+            Intent intent = new Intent(this,CreditsActivity.class);
+            startActivity(intent);
+        }
     }
 }
