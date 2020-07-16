@@ -17,11 +17,17 @@ import iss.workshop.team8flipgame.activity.GameActivity;
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.activity.ImagePickingActivity;
 import iss.workshop.team8flipgame.model.Image;
+import iss.workshop.team8flipgame.model.Score;
+import iss.workshop.team8flipgame.service.DBService;
 
 public class ImageAdapter extends BaseAdapter{
 
     private  Context mContext;
     private  ArrayList<Image> images;
+
+    private static final int NUM_OF_CARDS = 6;
+    int numOfAttempts = 0;
+    int totalTime = 0;
 
     public ImageAdapter(Context mContext, ArrayList<Image> images){
         this.mContext = mContext;
@@ -98,6 +104,17 @@ public class ImageAdapter extends BaseAdapter{
             });
         }
         return view;
+    }
+
+    public int calculateScore(int totalTime,int numOfAttempts){
+        return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
+    }
+
+    public void finishedGame(int totalTime,int numOfAttempts){
+        int totalScore = calculateScore(60,15);
+        Score scoreObj = new Score("Theingi",totalScore);
+        DBService db = new DBService(mContext);
+        db.addScore(scoreObj);
     }
 
     public void updateItemList(ArrayList<Image> newItemList) {

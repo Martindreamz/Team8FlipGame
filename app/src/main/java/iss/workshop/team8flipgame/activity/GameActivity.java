@@ -22,6 +22,11 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     BGMusicService bgMusicService;
     Boolean IS_MUTED = false ; //Setting of BG Music
 
+    //For Score calculation
+    private static final int NUM_OF_CARDS = 6;
+    int numOfAttempts = 0;
+    int totalTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             bindService(music, this, BIND_AUTO_CREATE);
         }
 
+    }
+
+    public int calculateScore(int totalTime,int numOfAttempts){
+        return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
     }
 
     //Bianca Lifecycle
