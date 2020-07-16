@@ -38,6 +38,7 @@ public class LeaderBoardActivity extends AppCompatActivity
         if(listView != null){
             listView.setAdapter(adapter);
         }
+
         //Bianca Music Service
         Intent music = new Intent(this, BGMusicService.class);
         bindService(music, this, BIND_AUTO_CREATE);
@@ -50,7 +51,7 @@ public class LeaderBoardActivity extends AppCompatActivity
         if(binder != null && !IS_MUTED) {
             bgMusicService = musicBinder.getService();
             bgMusicService.playMusic("LEADER_BOARD");
-            Log.i("MusicLog", "BGMusicService Connected, state: play MENU.");
+            Log.i("MusicLog", "BGMusicService Connected, state: play LeaderBoard.");
         }
     }
     @Override

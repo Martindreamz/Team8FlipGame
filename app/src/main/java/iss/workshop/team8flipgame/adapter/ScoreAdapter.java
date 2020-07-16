@@ -1,7 +1,9 @@
 package iss.workshop.team8flipgame.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +39,14 @@ public class ScoreAdapter extends ArrayAdapter {
         scores.add(score);
         Score score1 = new Score("Daryl1", 122434);
         scores.add(score1);
+        Log.i("ScoreLog", "Add 2 initial records.");
 
         for(int i=0; i<scores.size(); i++){
             add(null);
         }
     }
 
+    @SuppressLint("InflateParams")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -51,10 +55,13 @@ public class ScoreAdapter extends ArrayAdapter {
         convertView = inflater.inflate(R.layout.leaderboard_row, null);
 
         TextView name = convertView.findViewById(R.id.nameTxt);
-        name.setText(scores.get(position).getName());
+        String playerName = scores.get(position).getName();
+        name.setText(playerName);
 
         TextView score = convertView.findViewById(R.id.scoreTxt);
-        score.setText(scores.get(position).getScore());
+        int scoreRecord = scores.get(position).getScore();
+        score.setText(String.valueOf(scoreRecord));
+        //score.setText(scores.get(position).getScore());
 
         return convertView;
     }
