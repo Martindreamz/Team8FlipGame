@@ -2,15 +2,24 @@ package iss.workshop.team8flipgame.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -22,11 +31,16 @@ import iss.workshop.team8flipgame.adapter.ImageAdapter;
 import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.service.DBService;
 
-public class GameActivity extends AppCompatActivity implements ServiceConnection {
+public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener {
     ArrayList<Image> images;
     BGMusicService bgMusicService;
     static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
     Boolean IS_MUTED = false ; //Setting of BG Music
+    final Context context = this;
+    AlertDialog alertDialog;
+    View dialogView;
+    Button buttonOK;
+    EditText nameId;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -122,6 +136,53 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onServiceDisconnected(ComponentName name){
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
+    }
+
+    @Override
+    public void onClick(View view){
+        int id = view.getId();
+            dialogBox();
+        if(id == R.id.btnOK){
+            nameId = dialogView.findViewById(R.id.name);
+            String name = nameId.getText().toString();
+            System.out.println(name);
+            alertDialog.dismiss();
+            System.out.println("it is dismissed");
+        }
+    }
+
+    public void dialogBox(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        dialogView = inflater.inflate(R.layout.dialogbox, null);
+        builder.setView(dialogView);
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        final Button buttonOK = dialogView.findViewById(R.id.btnOK);
+        buttonOK.setOnClickListener(this);
+        buttonOK.setEnabled(false);
+
+        nameId = dialogView.findViewById(R.id.name);
+        nameId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(nameId.getText().length() == 0){
+                    buttonOK.setEnabled(false);
+                }
+                else{
+                    buttonOK.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
     }
 
 }
