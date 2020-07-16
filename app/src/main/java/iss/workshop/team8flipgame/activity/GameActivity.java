@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,6 +21,7 @@ import iss.workshop.team8flipgame.model.Image;
 public class GameActivity extends AppCompatActivity implements ServiceConnection {
     ArrayList<Image> images;
     BGMusicService bgMusicService;
+    static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
     Boolean IS_MUTED = false ; //Setting of BG Music
 
     @Override
