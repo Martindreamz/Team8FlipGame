@@ -13,8 +13,4 @@
     <string name="play">Play</string>
     <string name="leader_board">Leader Board</string>
     <string name="name">Name</string>
-    <string name="well_play">Well play!</string>
-    <string name="dia_Score">Score:</string>
-    <string name="ok">OK</string>
-    <string name="dia_points">20 points</string>
 </resources>

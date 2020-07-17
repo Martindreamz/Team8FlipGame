@@ -13,4 +13,5 @@ public class CreditsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_credits);
     }
+
 }
