@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -99,7 +100,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         gridView.setOnItemClickListener(this);
 
         //Bianca Music Service
-        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        SharedPreferences sharedPref = getSharedPreferences("music_service", MODE_PRIVATE);
+        IS_MUTED = sharedPref.getBoolean("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
