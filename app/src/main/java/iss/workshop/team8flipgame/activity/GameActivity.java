@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-       //variables
+        //variables
         images = new ArrayList<>();
         selectedMatch = new ArrayList<>();
         Intent intent = getIntent();
@@ -158,6 +158,7 @@ public class GameActivity extends AppCompatActivity
             Log.i("MusicLog", "BGMusicService Connected, state: play GAME.");
         }
     }
+
     @Override
     public void onServiceDisconnected(ComponentName name){
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
@@ -284,4 +285,6 @@ public class GameActivity extends AppCompatActivity
             }
         }
     }
+
+
 }
