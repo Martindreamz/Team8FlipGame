@@ -258,6 +258,9 @@ public class GameActivity extends AppCompatActivity
             String playerName = nameId.getText().toString();
             finishedGame(playerName,totalScore);
             alertDialog.dismiss();
+
+            Intent intent = new Intent(this, ImagePickingActivity.class);
+            startActivity(intent);
             finish();
         }
     }
