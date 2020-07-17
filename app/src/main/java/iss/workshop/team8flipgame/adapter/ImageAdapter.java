@@ -1,5 +1,8 @@
 package iss.workshop.team8flipgame.adapter;
 
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ViewFlipper;
 
 import androidx.annotation.RequiresApi;
 
@@ -119,6 +123,9 @@ public class ImageAdapter extends BaseAdapter{
             final ImageView imageView2 =view.findViewById(R.id.image2);
             //imageView2.setImageBitmap(image.getBitmap());
 
+            //Flipper View instantiate
+            final ViewFlipper flipper = view.findViewById(R.id.my_view_flipper);
+
             final Handler handler = new Handler();
             final Runnable runnable = new Runnable() {
                 @Override
@@ -139,6 +146,8 @@ public class ImageAdapter extends BaseAdapter{
                     System.out.println("Game Activity " + image.getPosID());
                     System.out.println(image.getBitmap());
                     ((ImageView) view).setImageBitmap(image.getBitmap());
+
+                    flipViewFlipper(flipper);
 
                     if(barray.size()<2){
 
@@ -188,6 +197,16 @@ public class ImageAdapter extends BaseAdapter{
     public void updateItemList(ArrayList<Image> newItemList) {
         this.images = newItemList;
         notifyDataSetChanged();
+    }
+
+    //Flipper method
+    private void flipViewFlipper(ViewFlipper flipper){
+        if(flipper.getDisplayedChild() == 0){
+            flipper.setDisplayedChild(1);
+        }
+        else{
+            flipper.setDisplayedChild(0);
+        }
     }
 
 }

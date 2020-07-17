@@ -4,14 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <ViewFlipper
+        android:id="@+id/my_view_flipper"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:id="@+id/image2"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="false"
-        android:clickable="true"
-        android:background="@drawable/full_moon_party"
-        />
+        android:layout_height="match_parent"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/image2"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="false"
+            android:clickable="true"
+            android:background="@drawable/full_moon_party"
+            />
+
+        <LinearLayout
+            android:id="@+id/back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/image2_back"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="false"
+                android:clickable="true"
+                android:background="@mipmap/ic_launcher"/>
+
+        </LinearLayout>
+
+
+
+    </ViewFlipper>
+
 
 </LinearLayout>
