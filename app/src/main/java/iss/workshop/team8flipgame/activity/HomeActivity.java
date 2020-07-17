@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import iss.workshop.team8flipgame.R;
@@ -23,13 +24,80 @@ import pl.droidsonroids.gif.GifImageView;
 public class HomeActivity extends AppCompatActivity
         implements View.OnClickListener , ServiceConnection {
     BGMusicService bgMusicService;
-    //public Boolean IS_MUTED;//= false ; //Setting of BG Music
+    public Boolean IS_MUTED = false ; //Setting of BG Music
+    RadioGroup difficulties;
+    int cardCount;
+    String difficulty;
+    SharedPreferences game_service;
     SharedPreferences sharedPref;
+    SharedPreferences.Editor game_service_editor;
+    ImageButton toggle;
+    Button play;
+    Button leader;
+    Button credits;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incoming);
+        game_service = getSharedPreferences("game_service",MODE_PRIVATE);
+        game_service_editor = game_service.edit();
+
+        //top bar
+        toggle = findViewById(R.id.soundToggle);
+        if (toggle != null) { toggle.setOnClickListener(this); }
+
+        //play button
+        play = findViewById(R.id.play);
+        if (play != null) { play.setOnClickListener(this); }
+        play.setEnabled(false);
+
+        //difficulty radio
+        difficulties = findViewById(R.id.difficultyRD);
+        difficulties.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.easy_modeRD:
+                        cardCount=6;
+                        difficulty="Easy";
+                        game_service_editor.putString("difficulty",difficulty);
+                        game_service_editor.putInt("cardcount",cardCount);
+                        game_service_editor.commit();
+                        play.setEnabled(true);
+                        break;
+                    case R.id.normal_modeRD:
+                        cardCount=10;
+                        difficulty="Normal";
+                        game_service_editor.putString("difficulty",difficulty);
+                        game_service_editor.putInt("cardcount",cardCount);
+                        game_service_editor.commit();
+                        play.setEnabled(true);
+                        break;
+                    case R.id.hard_modeRD:
+                        cardCount=14;
+                        difficulty="Hard";
+                        game_service_editor.putString("difficulty",difficulty);
+                        game_service_editor.putInt("cardcount",cardCount);
+                        game_service_editor.commit();
+                        play.setEnabled(true);
+                        break;
+                }
+
+            }
+        });
+
+        //leaderboard button
+        leader = findViewById(R.id.leaderBoard);
+        if (leader != null) { leader.setOnClickListener(this); }
+
+        //credits button
+        credits = findViewById(R.id.credits);
+        if (credits != null) { credits.setOnClickListener(this); }
+
+
+
         GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
         GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
         Button play = findViewById(R.id.play);
@@ -66,10 +134,12 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
+
         int id = v.getId();
         if (id == R.id.play) {
             Intent intent = new Intent(this, ImagePickingActivity.class);
             startActivity(intent);
+
         }
         else if (id == R.id.leaderBoard) {
             Intent intent = new Intent(this, LeaderBoardActivity.class);
