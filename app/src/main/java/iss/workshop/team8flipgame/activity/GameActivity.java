@@ -54,6 +54,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     ArrayList<Integer> selectedMatch;
     TextView matches;
     int matched;
+    long elapsedMillis;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -100,8 +101,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 
     }
 
-    public int calculateScore(int totalTime,int numOfAttempts){
-        return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
+    public int calculateScore(long totalTime,int numOfAttempts){
+        return (int) ((5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
     }
 
     public void finishedGame(String name ,int totalScore){
@@ -116,7 +117,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         super.onStart();
         if (!isGameFinished)
         {
-            chronometer.setBase(SystemClock.elapsedRealtime() - totalTime);
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
             chronometer.start();
         }
     }
@@ -129,13 +130,25 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     }
     @Override
     public void onResume(){
+        if (!isGameFinished)
+        {
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
+            chronometer.start();
+        }
         super.onResume();
         // restore game
     }
+
     @Override
     public void onDestroy(){
         super.onDestroy();
         // end everything
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
     //Bianca Music Service
@@ -156,7 +169,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
-        dialogBox();
+        //dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
@@ -172,7 +185,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    public void dialogBox(){
+    public void dialogBox(long totalTime, int numOfAttempts){
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         dialogView = inflater.inflate(R.layout.dialogbox, null);
@@ -180,8 +193,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         alertDialog = builder.create();
         alertDialog.show();
 
-        txtScore = findViewById(R.id.txtScore);
-        totalScore = calculateScore(60,15);
+        txtScore = dialogView.findViewById(R.id.txtScore);
+        totalScore = calculateScore(totalTime,numOfAttempts);
         txtScore.setText(totalScore+ " points");
 
         final Button buttonOK = dialogView.findViewById(R.id.btnOK);
@@ -249,17 +262,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
                     if(matched==NUM_OF_CARDS){
                         isGameFinished=true;
+                        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                         chronometer.stop();
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        System.out.println(elapsedMillis);
-
+                        System.out.println("total time " + elapsedMillis);
+                        //need to fix
 //                        dialogBox();
 //                        finishedGame(nameId.getText().toString(),calculateScore((int)elapsedMillis,numOfAttempts));
+
                     }
                 }
                 else{
@@ -268,7 +277,25 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     numOfAttempts++;
                     selectedMatch.remove(selectedMatch.size()-1);
                     selectedMatch.remove(selectedMatch.size()-1);
-                    handler.postDelayed(runnable,300);
+                    handler.postDelayed(runnable,1000);
+                }
+            }
+
+            if(isGameFinished == true){
+                int id = view.getId();
+                dialogBox(elapsedMillis,numOfAttempts);
+                if(id == R.id.btnOK){
+                    nameId = dialogView.findViewById(R.id.name);
+                    String playerName = nameId.getText().toString();
+
+                    finishedGame(playerName,totalScore);
+
+                    System.out.println(playerName);
+                    alertDialog.dismiss();
+                    System.out.println("it is dismissed");
+
+                    Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
+                    startActivity(intentForLeaderBoard);
                 }
             }
         }
