@@ -27,6 +27,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wajahatkarim3.easyflipview.EasyFlipView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -38,18 +40,20 @@ import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.service.DBService;
 
 public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
-    ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<ImageView> seleted_view = new ArrayList<>();
     ArrayList<Image> images;
-    ArrayList<Integer> selectedMatch;
     BGMusicService bgMusicService;
+    static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
     Boolean IS_MUTED = false ; //Setting of BG Music
     final Context context = this;
     AlertDialog alertDialog;
     View dialogView;
+    Button buttonOK;
     EditText nameId;
     TextView txtScore;
+    public ArrayList<Bitmap> barray = new ArrayList<>();
+    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
     GridView gridView;
+    ArrayList<Integer> selectedMatch;
     TextView matches;
     int matched;
     long elapsedMillis;
@@ -58,10 +62,12 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
     private int numOfAttempts = 0;
+
     private Chronometer chronometer;
     private boolean isGameFinished = false;
     private long totalTime = 0;
     private int totalScore=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 //        top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
+
 
 //        Grid view
         for(int i : selectedCell){
@@ -167,10 +174,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
+        //dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
+
             finishedGame(playerName,totalScore);
+
             System.out.println(playerName);
             alertDialog.dismiss();
             System.out.println("it is dismissed");
@@ -222,8 +232,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            seleted_view.get(1).setImageBitmap(null);
-            seleted_view.get(0).setImageBitmap(null);
+            seleted_view.get(1).flipTheView();
+            seleted_view.get(0).flipTheView();
             barray.clear();
             seleted_view.clear();
             clickable=true;
@@ -236,14 +246,17 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 
             Image image = images.get(i);
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
-            ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            EasyFlipView currentView= (EasyFlipView) gridElement.getChildAt(0);
+            ImageView currentImage = (ImageView) currentView.getChildAt(0);
             currentImage.setImageBitmap(image.getBitmap());
+
+            currentView.flipTheView();
 
             if(barray.size()<2){
                 Bitmap b = image.getBitmap();
                 barray.add(b);
                 selectedMatch.add(i);
-                seleted_view.add(currentImage);
+                seleted_view.add(currentView);
             }
 
             if(barray.size()==2){
@@ -279,7 +292,21 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             }
 
             if(isGameFinished == true){
+                int id = view.getId();
                 dialogBox(elapsedMillis,numOfAttempts);
+                if(id == R.id.btnOK){
+                    nameId = dialogView.findViewById(R.id.name);
+                    String playerName = nameId.getText().toString();
+
+                    finishedGame(playerName,totalScore);
+
+                    System.out.println(playerName);
+                    alertDialog.dismiss();
+                    System.out.println("it is dismissed");
+
+                    Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
+                    startActivity(intentForLeaderBoard);
+                }
             }
         }
     }
