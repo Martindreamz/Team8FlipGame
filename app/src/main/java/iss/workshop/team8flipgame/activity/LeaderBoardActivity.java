@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -38,8 +39,9 @@ public class LeaderBoardActivity extends AppCompatActivity
             listView.setAdapter(adapter);
         }
 
-        Intent intent = getIntent();
-        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        //Bianca Music Service
+        SharedPreferences sharedPref = getSharedPreferences("music_service", MODE_PRIVATE);
+        IS_MUTED = sharedPref.getBoolean("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
