@@ -54,12 +54,12 @@ public class BGMusicService extends Service {
         }
         switch (scene) {
             case "GAME": {
-                BGMusicPlayer = MediaPlayer.create(this, R.raw.rainbow);
+                BGMusicPlayer = MediaPlayer.create(this, R.raw.mario);
                 Log.i("MusicLog", "Play music GAME");
                 break;
             }
             case "MENU": {
-                BGMusicPlayer = MediaPlayer.create(this, R.raw.menu);
+                BGMusicPlayer = MediaPlayer.create(this, R.raw.pokemon);
                 Log.i("MusicLog", "Play music MENU");
                 break;
             }
