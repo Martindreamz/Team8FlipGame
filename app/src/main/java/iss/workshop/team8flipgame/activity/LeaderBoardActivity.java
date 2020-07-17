@@ -85,4 +85,10 @@ public class LeaderBoardActivity extends AppCompatActivity
             unbindService(this);// unbindService
         // end everything
     }
+
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,HomeActivity.class);
+        startActivity(intent);
+    }
 }

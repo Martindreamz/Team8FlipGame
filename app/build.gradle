@@ -33,4 +33,5 @@ dependencies {
     implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:3.0.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
 
+
 }
