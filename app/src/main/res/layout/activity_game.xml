@@ -8,35 +8,41 @@
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        >
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/matches"
             android:text="@string/matches"
-            android:layout_gravity="left"
+            android:textSize="30sp"
+            android:layout_gravity="left|center"
             android:layout_weight="0.5"/>
 
         <Chronometer
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/chronometer"
+            android:textSize="30sp"
             android:gravity="right"
+            android:layout_gravity="center"
             android:layout_weight="0.5"/>
     </LinearLayout>
 
+
     <GridView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="600dp"
         android:id="@+id/gridViewGame"
         android:columnWidth="0dp"
-        android:gravity="center"
         android:numColumns="3"
+        android:stretchMode="columnWidth"
         android:verticalSpacing="0dip"
         android:horizontalSpacing="0dip"
         android:scrollbars="none"
         android:fadeScrollbars="true"
         />
+
 </androidx.appcompat.widget.LinearLayoutCompat>
