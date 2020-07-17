@@ -20,7 +20,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:src="@drawable/cat"
-        android:background="@drawable/full_moon_party"
+        android:background="@drawable/logo"
         android:layout_gravity="center_vertical|center_horizontal"
         />
     <Button

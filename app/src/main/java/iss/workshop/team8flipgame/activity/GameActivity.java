@@ -184,13 +184,14 @@ public class GameActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(),
                     "You left the game, please come back in 5 seconds to continue!", Toast.LENGTH_LONG).show();
             createNotificationChannel();
-            createNotification();
+            createNotification(1);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Thread.sleep(5000);
-                        if (!getLifecycle().getCurrentState().name().equals("RESUMED")) {
+                        if (!getLifecycle().getCurrentState().name().equals("RESUMED")
+                        || !getLifecycle().getCurrentState().name().equals("STARTED")) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -199,6 +200,7 @@ public class GameActivity extends AppCompatActivity
                                     Toast.makeText(getApplicationContext(),
                                             "This turn is over!", Toast.LENGTH_SHORT).show();
                                     finish();
+                                    createNotification(2);
                                     //onDestroy();//cannot destroy since fragments have been destriyed.
                                 }
                             });
@@ -256,8 +258,7 @@ public class GameActivity extends AppCompatActivity
             String playerName = nameId.getText().toString();
             finishedGame(playerName,totalScore);
             alertDialog.dismiss();
-            Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
-            startActivity(intentForLeaderBoard);
+            finish();
         }
     }
 
@@ -371,20 +372,28 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
-    private void createNotification() {
+    private void createNotification(int times) {
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this, CHANNEL_ID);
-
-        builder.setSmallIcon(R.drawable.games)
-                .setContentTitle("Oops!")
-                .setContentText("You just left the game, please come back in 5 seconds to continue!" +
-                        "Otherwise you will lose this turn and need to restart with a new game.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setTimeoutAfter(5000);
+        if (times == 1 ) {
+            builder.setSmallIcon(R.drawable.games)
+                    .setContentTitle("Oops!")
+                    .setContentText("You just left the game, please come back in 5 seconds to continue!" +
+                            "Otherwise you will lose this turn and need to restart with a new game.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        }
+        if (times == 2 ) {
+            builder.setSmallIcon(R.drawable.games)
+                    .setContentTitle("Come On!")
+                    .setContentText("Current game has been stopped already." +
+                            "Wanna try again?")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setTimeoutAfter(60000);
+        }
 
         Notification notification = builder.build();
-
         int notificationId = 99999;
         NotificationManagerCompat mgr = NotificationManagerCompat.from(this);
         mgr.notify(notificationId, notification);
