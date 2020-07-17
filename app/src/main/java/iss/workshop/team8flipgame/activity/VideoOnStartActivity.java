@@ -29,8 +29,8 @@ public class VideoOnStartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_on_start);
 
-        //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
+        //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -50,7 +50,7 @@ public class VideoOnStartActivity extends AppCompatActivity {
         if (videoView == null)
             return;
 
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.mov_bbb;
+        String path = "android.resource://" + getPackageName() + "/" + R.raw.team;
         Uri uri = Uri.parse(path);
         videoView.setVideoURI(uri);
         videoView.start();
