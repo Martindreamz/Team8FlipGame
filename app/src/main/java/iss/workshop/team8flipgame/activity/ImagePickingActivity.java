@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
@@ -21,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -30,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
 import iss.workshop.team8flipgame.service.BGMusicService;
 import iss.workshop.team8flipgame.model.*;
@@ -39,12 +36,11 @@ import iss.workshop.team8flipgame.ImageScraper;
 import iss.workshop.team8flipgame.R;
 
 public class ImagePickingActivity extends AppCompatActivity
-        implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection,AdapterView.OnItemClickListener {
-
+        implements View.OnClickListener, ImageScraper.ICallback,
+        ServiceConnection,AdapterView.OnItemClickListener {
     ArrayList<Image> images = new ArrayList<>();
     Button mFetchBtn;
     EditText urlReader;
-    String url;
     ImageScraper imageScraper;
     static int imageNo =20;
     GridView gridView;
@@ -56,17 +52,17 @@ public class ImagePickingActivity extends AppCompatActivity
     ProgressBar progressBar;
     TextView mDownload_progressText;
     TextView mSelected_imageText;
-    public static MutableLiveData<Integer> listen;
+//    public static MutableLiveData<Integer> listen; //No Longer in use but keep this, too powerful for next time
     BGMusicService bgMusicService;
     public static Boolean IS_MUTED; //Setting of BG Music
     private static int MASK_HINT_COLOR = 0x99ffffff;
     Boolean clickable;
     SharedPreferences global_pref;
 
+
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
         public void handleMessage(@NonNull Message msg){
-            System.out.println("Msg:"+msg.obj);
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(childPos);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             currentImage.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -76,13 +72,13 @@ public class ImagePickingActivity extends AppCompatActivity
             progressBar.setProgress(progressBar.getProgress() + 5);
 
             if(progressBar.getProgress()==100) {
+                clickable=true;
                 progressBar.setVisibility(View.GONE);
                 mDownload_progressText.setVisibility(View.GONE);
                 mSelected_imageText.setVisibility(View.VISIBLE);
                 mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
             }
             childPos++;
-            System.out.println(childPos);
             if(childPos==getImageNo()){
                 childPos = 0;
             }
@@ -103,12 +99,13 @@ public class ImagePickingActivity extends AppCompatActivity
         mFetchBtn = findViewById(R.id.BTfetch);
         mFetchBtn.setOnClickListener(this);
 
+
         //for gridview
         for(int i = 0;i<imageNo;i++){
             images.add(new Image(null,i));
         }
         gridView = findViewById(R.id.gridView);
-        ImageAdapter imageAdapter = new ImageAdapter(this, images);
+        imageAdapter = new ImageAdapter(this, images);
         gridView.setAdapter(imageAdapter);
         gridView.setVerticalScrollBarEnabled(false);
         gridView.setOnItemClickListener(this);
@@ -129,21 +126,17 @@ public class ImagePickingActivity extends AppCompatActivity
         }
 
         reset();
-//
-//        listen = new MutableLiveData<>();
-//
-//        listen.setValue(selectedCell.size()); //Initilize with a value
-//
+
+//This is no longer in use but keep this, too useful for next time, Martin
+//        listen = new MutableLiveData<>();//
+//        listen.setValue(selectedCell.size()); //Initilize with a value//
 //        listen.observe(this, new Observer<Integer>() {
 //            @Override
 //            public void onChanged(Integer integer) {
 //                mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
 //            }
 //        });
-
-
     }
-
 
     //gettsers and setters
     public static int getImageNo() {
@@ -157,18 +150,17 @@ public class ImagePickingActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        System.out.println(id);
         if(id == R.id.BTfetch){
-            clickable = true;
+            clickable = false;
             mainHandler.removeCallbacksAndMessages(null);
             progressBar.setVisibility(View.VISIBLE);
             mDownload_progressText.setVisibility(View.VISIBLE);
             mSelected_imageText.setVisibility(View.GONE);
-            reset();
+            reset();//Martin clear the data memory
+            clearImages();//Bianca Reset all images to null
             mDownload_progressText.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
             System.out.println("start scrapping");
             scrapImage();
-
         }
     }
 
@@ -177,6 +169,16 @@ public class ImagePickingActivity extends AppCompatActivity
         selectedCell.clear();
         selectedImage.clear();
         progressBar.setProgress(0);
+    }
+
+    //Bianca Reset all images to null (only show Background)
+    void clearImages() {
+        for (int i = 0; i < imageNo; i++) {
+            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
+            ImageView currentImage = (ImageView) gridElement.getChildAt(0);
+            currentImage.setImageBitmap(null); //work!
+            if (currentImage.getColorFilter() != null) currentImage.setColorFilter(null); //Try
+        }
     }
 
     void scrapImage(){
@@ -195,17 +197,13 @@ public class ImagePickingActivity extends AppCompatActivity
     @Override
     public void onBitmapReady(Image image) {
         if(childPos!=getImageNo()){
-
             Message msg = new Message();
             msg.obj=image;
-            System.out.println(childPos);
-
             mainHandler.sendMessage(msg);}
     }
 
     @Override
     public void makeToast(String message) {
-
     }
 
     //Bianca Music Service
@@ -241,7 +239,6 @@ public class ImagePickingActivity extends AppCompatActivity
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
-
     }
     @Override
     public void onDestroy(){
@@ -255,8 +252,6 @@ public class ImagePickingActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if(clickable){
-            System.out.println("Image picking: " + i);
-
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             if(currentImage.getColorFilter() == null){
@@ -270,16 +265,14 @@ public class ImagePickingActivity extends AppCompatActivity
             {
                 selectedCell.remove(Integer.valueOf(i));
                 mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
-
             }
             else{
                 selectedCell.add(i);
                 mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
             }
-//            listen.setValue(selectedCell.size());
-
 
             if (selectedCell.size()==gameImageNo){
+                imageScraper.cancel(true);
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
                 intent.putExtra("IS_MUTED",IS_MUTED);

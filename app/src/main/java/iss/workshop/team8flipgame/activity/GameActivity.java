@@ -27,6 +27,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wajahatkarim3.easyflipview.EasyFlipView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -49,11 +51,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     EditText nameId;
     TextView txtScore;
     public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<ImageView> seleted_view = new ArrayList<>();
+    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
     GridView gridView;
     ArrayList<Integer> selectedMatch;
     TextView matches;
     int matched;
+    long elapsedMillis;
+    Boolean clickable = true;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -63,6 +67,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     private boolean isGameFinished = false;
     private long totalTime = 0;
     private int totalScore=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 //        top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
+        matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
+
 
 //        Grid view
         for(int i : selectedCell){
@@ -100,8 +107,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 
     }
 
-    public int calculateScore(int totalTime,int numOfAttempts){
-        return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
+    public int calculateScore(long totalTime,int numOfAttempts){
+        return (int) ((5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
     }
 
     public void finishedGame(String name ,int totalScore){
@@ -111,12 +118,19 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,ImagePickingActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void onStart()
     {
         super.onStart();
         if (!isGameFinished)
         {
-            chronometer.setBase(SystemClock.elapsedRealtime() - totalTime);
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
             chronometer.start();
         }
     }
@@ -129,13 +143,25 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     }
     @Override
     public void onResume(){
+        if (!isGameFinished)
+        {
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
+            chronometer.start();
+        }
         super.onResume();
         // restore game
     }
+
     @Override
     public void onDestroy(){
         super.onDestroy();
         // end everything
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
     //Bianca Music Service
@@ -156,7 +182,6 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
-        dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
@@ -172,7 +197,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    public void dialogBox(){
+    public void dialogBox(long totalTime, int numOfAttempts){
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         dialogView = inflater.inflate(R.layout.dialogbox, null);
@@ -180,8 +205,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         alertDialog = builder.create();
         alertDialog.show();
 
-        txtScore = findViewById(R.id.txtScore);
-        totalScore = calculateScore(60,15);
+        txtScore = dialogView.findViewById(R.id.txtScore);
+        totalScore = calculateScore(totalTime,numOfAttempts);
         txtScore.setText(totalScore+ " points");
 
         final Button buttonOK = dialogView.findViewById(R.id.btnOK);
@@ -214,27 +239,31 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            seleted_view.get(1).setImageBitmap(null);
-            seleted_view.get(0).setImageBitmap(null);
+            seleted_view.get(1).flipTheView();
+            seleted_view.get(0).flipTheView();
             barray.clear();
             seleted_view.clear();
+            clickable=true;
         }
     };
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(!selectedMatch.contains(Integer.valueOf(i))){
+        if(!selectedMatch.contains(Integer.valueOf(i))&&clickable==true){
             System.out.println("Game Activity " + i);
 
             Image image = images.get(i);
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
-            ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            EasyFlipView currentView= (EasyFlipView) gridElement.getChildAt(0);
+            ImageView currentImage = (ImageView) currentView.getChildAt(0);
             currentImage.setImageBitmap(image.getBitmap());
+
+            currentView.flipTheView();
 
             if(barray.size()<2){
                 Bitmap b = image.getBitmap();
                 barray.add(b);
                 selectedMatch.add(i);
-                seleted_view.add(currentImage);
+                seleted_view.add(currentView);
             }
 
             if(barray.size()==2){
@@ -249,27 +278,28 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
                     if(matched==NUM_OF_CARDS){
                         isGameFinished=true;
+                        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                         chronometer.stop();
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        System.out.println(elapsedMillis);
-
+                        System.out.println("total time " + elapsedMillis);
+                        //need to fix
 //                        dialogBox();
 //                        finishedGame(nameId.getText().toString(),calculateScore((int)elapsedMillis,numOfAttempts));
+
                     }
                 }
                 else{
                     System.out.println("pos2.2");
                     System.out.println("not same");
                     numOfAttempts++;
+                    clickable=false;
                     selectedMatch.remove(selectedMatch.size()-1);
                     selectedMatch.remove(selectedMatch.size()-1);
-                    handler.postDelayed(runnable,300);
+                    handler.postDelayed(runnable,1000);
                 }
+            }
+
+            if(isGameFinished == true){
+                dialogBox(elapsedMillis,numOfAttempts);
             }
         }
     }

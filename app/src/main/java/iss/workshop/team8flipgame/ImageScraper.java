@@ -94,10 +94,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
                 @Override
                 public void run(){
                     try{
-//                        System.out.println("start downloading");
                         downloadImage(url);
-//                        System.out.println("stop downloading");
-
                     }catch(IOException e)
                     {
                         e.printStackTrace();
@@ -120,9 +117,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         connection.connect();
         if(connection.getResponseCode() == 200) {
             InputStream inputStream = connection.getInputStream();
-//            System.out.println("getting bitmap");
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//            System.out.println("gotten bitmap");
             publishProgress(new Image(bitmap));
         }
         connection.disconnect();

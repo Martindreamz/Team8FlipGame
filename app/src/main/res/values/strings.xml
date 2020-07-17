@@ -7,16 +7,20 @@
 \n Wutt Yee Hnin Lwin \n Wu Yirui</string>
     <string name="Licenses">Licenses</string>
     <string name="lincense_detail">License details etc</string>
-    <string name="matches">0/10 matches</string>
+    <string name="matches">0/6 matches</string>
     <string name="url">https://stocksnap.io/search/cat</string>
     <string name="fetchBtn">Fetch</string>
-    <string name="play">Play</string>
-    <string name="leader_board">Leader Board</string>
     <string name="name">Name</string>
     <string name="credit">Credit</string>
     <string name="selected_images">0 out of 6 images selected</string>
     <string name="easy_mode">Easy</string>
     <string name="normal_mode">Normal</string>
     <string name="hard_mode">Hard</string>
+    <string name="well_play">Well play!</string>
+    <string name="dia_Score">Score:</string>
+    <string name="ok">OK</string>
+    <string name="dia_points">20 points</string>
+    <string name="play">play</string>
+    <string name="leader_board">leader_board</string>
 
 </resources>

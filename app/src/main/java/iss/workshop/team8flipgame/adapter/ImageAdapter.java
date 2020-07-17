@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,10 +74,9 @@ public class ImageAdapter extends BaseAdapter{
                 view = layoutInflater.inflate(R.layout.images, null);
             }
             final ImageView imageView1 = view.findViewById(R.id.image);
-            imageView1.setImageBitmap(image.getBitmap());}
+            imageView1.setImageBitmap(image.getBitmap());
+        }
 
-//
-//
         if(mContext instanceof GameActivity){
 
             final Image image = images.get(pos);
@@ -88,7 +88,6 @@ public class ImageAdapter extends BaseAdapter{
             }
 
             final ImageView imageView2 =view.findViewById(R.id.image2);
-            //imageView2.setImageBitmap(image.getBitmap());
 
             final Handler handler = new Handler();
             final Runnable runnable = new Runnable() {
@@ -102,45 +101,6 @@ public class ImageAdapter extends BaseAdapter{
                     seleted_view.clear();
                 }
             };
-//
-//            imageView2.setOnClickListener(new View.OnClickListener() {
-//                @RequiresApi(api = Build.VERSION_CODES.N)
-//                @Override
-//                public void onClick(View view) {
-//                    System.out.println("Game Activity " + image.getPosID());
-//                    System.out.println(image.getBitmap());
-//                    ((ImageView) view).setImageBitmap(image.getBitmap());
-//
-//                    if(barray.size()<2){
-//
-//                        System.out.println("pos1");
-//                        Bitmap b = image.getBitmap();
-//                        view.setClickable(false);
-//                        barray.add(b);
-//                        seleted_view.add((ImageView) view);
-//                    }
-//
-//                    if(barray.size()==2){
-//                        System.out.println("pos2");
-//                        if(barray.get(0) == barray.get(1)){
-//                            System.out.println("pos2.1");
-//                            System.out.println("same");
-//                            view.setClickable(false);
-//                            seleted_view.get(0).setClickable(false);
-//                            barray.clear();
-//                            seleted_view.clear();
-//                        }
-//                        else{
-//                            System.out.println("pos2.2");
-//                            System.out.println("not same");
-//                            handler.postDelayed(runnable,300);
-//                        }
-//                    }
-//                }
-//
-//
-//
-//            };
         }
         return view;
     }
