@@ -27,6 +27,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wajahatkarim3.easyflipview.EasyFlipView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -240,7 +242,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 
             Image image = images.get(i);
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
-            ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            EasyFlipView currentView= (EasyFlipView) gridElement.getChildAt(0);
+            ImageView currentImage = (ImageView) currentView.getChildAt(0);
             currentImage.setImageBitmap(image.getBitmap());
 
             if(barray.size()<2){

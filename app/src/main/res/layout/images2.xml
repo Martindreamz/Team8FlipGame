@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.wajahatkarim3.easyflipview.EasyFlipView
+        android:id="@+id/myFlipView"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:id="@+id/image2"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="false"
-        android:clickable="false"
-        android:background="@drawable/full_moon_party"
-        />
+        android:layout_height="wrap_content"
+        app:flipOnTouch="false"
+        app:flipEnabled="true"
+        app:flipDuration="400"
+        app:flipFrom="right"
+        app:flipType="horizontal"
+        app:autoFlipBack="false"
+        >
+
+        <!-- Back Layout Goes Here -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:id="@+id/image2_back"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="false"
+            android:clickable="false"
+            android:background="@drawable/full_moon_party"
+            />
+
+        <!-- Front Layout Goes Here -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:id="@+id/image2"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="false"
+            android:clickable="false"
+            android:background="@drawable/full_moon_party"
+            />
+
+    </com.wajahatkarim3.easyflipview.EasyFlipView>
 
 </LinearLayout>
