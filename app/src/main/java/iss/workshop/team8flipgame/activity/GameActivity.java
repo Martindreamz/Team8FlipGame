@@ -51,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     EditText nameId;
     TextView txtScore;
     public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<ImageView> seleted_view = new ArrayList<>();
+    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
     GridView gridView;
     ArrayList<Integer> selectedMatch;
     TextView matches;
@@ -68,6 +68,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     private long totalTime = 0;
     private int totalScore=0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +83,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 //        top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
+
 
 //        Grid view
         for(int i : selectedCell){
@@ -230,8 +232,8 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            seleted_view.get(1).setImageBitmap(null);
-            seleted_view.get(0).setImageBitmap(null);
+            seleted_view.get(1).flipTheView();
+            seleted_view.get(0).flipTheView();
             barray.clear();
             seleted_view.clear();
             clickable=true;
@@ -248,11 +250,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             ImageView currentImage = (ImageView) currentView.getChildAt(0);
             currentImage.setImageBitmap(image.getBitmap());
 
+            currentView.flipTheView();
+
             if(barray.size()<2){
                 Bitmap b = image.getBitmap();
                 barray.add(b);
                 selectedMatch.add(i);
-                seleted_view.add(currentImage);
+                seleted_view.add(currentView);
             }
 
             if(barray.size()==2){
