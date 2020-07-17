@@ -17,10 +17,11 @@
         android:gravity="center"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/listView"/>
+        app:layout_constraintBottom_toTopOf="@id/listView" />
 
     <ListView
         android:id="@+id/listView"
+        style="@style/AppTheme"
         android:background="#F0F8FF"
         android:textColor="#FFFFE0"
         android:layout_width="match_parent"
