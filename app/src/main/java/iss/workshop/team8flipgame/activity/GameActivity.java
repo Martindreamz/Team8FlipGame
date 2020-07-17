@@ -262,15 +262,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
                     if(matched==NUM_OF_CARDS){
                         isGameFinished=true;
-//                        try {
-//                            Thread.sleep(5000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
                         elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                         chronometer.stop();
                         System.out.println("total time " + elapsedMillis);
-
+                        //need to fix
 //                        dialogBox();
 //                        finishedGame(nameId.getText().toString(),calculateScore((int)elapsedMillis,numOfAttempts));
 
@@ -282,7 +277,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     numOfAttempts++;
                     selectedMatch.remove(selectedMatch.size()-1);
                     selectedMatch.remove(selectedMatch.size()-1);
-                    handler.postDelayed(runnable,300);
+                    handler.postDelayed(runnable,1000);
                 }
             }
 

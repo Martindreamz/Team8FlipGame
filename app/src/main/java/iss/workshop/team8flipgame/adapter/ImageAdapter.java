@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,12 @@ public class ImageAdapter extends BaseAdapter{
                 view = layoutInflater.inflate(R.layout.images, null);
             }
             final ImageView imageView1 = view.findViewById(R.id.image);
-            imageView1.setImageBitmap(image.getBitmap());}
+            imageView1.setImageBitmap(image.getBitmap());
+            if (imageView1.getColorFilter() != null) {
+                Log.i("ColorFilter","cleared after new fetch.");
+                imageView1.clearColorFilter();
+            }
+        }
 
 //
 //

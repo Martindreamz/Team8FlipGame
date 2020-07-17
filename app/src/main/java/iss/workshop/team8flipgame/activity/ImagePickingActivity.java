@@ -66,6 +66,7 @@ public class ImagePickingActivity extends AppCompatActivity
             System.out.println("Msg:"+msg.obj);
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(childPos);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
+            //if
             currentImage.setScaleType(ImageView.ScaleType.FIT_XY);
             currentImage.setImageBitmap(((Image) msg.obj).getBitmap());
             selectedImage.add(((Image)msg.obj));
@@ -73,6 +74,7 @@ public class ImagePickingActivity extends AppCompatActivity
             progressBar.setProgress(progressBar.getProgress() + 5);
 
             if(progressBar.getProgress()==100) {
+                clickable=true;
                 progressBar.setVisibility(View.GONE);
                 mDownload_progressText.setVisibility(View.GONE);
                 mSelected_imageText.setVisibility(View.VISIBLE);
@@ -153,12 +155,14 @@ public class ImagePickingActivity extends AppCompatActivity
         int id = view.getId();
         System.out.println(id);
         if(id == R.id.BTfetch){
-            clickable = true;
+            clickable = false;
             mainHandler.removeCallbacksAndMessages(null);
             progressBar.setVisibility(View.VISIBLE);
             mDownload_progressText.setVisibility(View.VISIBLE);
             mSelected_imageText.setVisibility(View.GONE);
             reset();
+
+
             mDownload_progressText.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
             System.out.println("start scrapping");
             scrapImage();
@@ -171,6 +175,7 @@ public class ImagePickingActivity extends AppCompatActivity
         selectedCell.clear();
         selectedImage.clear();
         progressBar.setProgress(0);
+
     }
 
     void scrapImage(){
@@ -274,6 +279,7 @@ public class ImagePickingActivity extends AppCompatActivity
 
 
             if (selectedCell.size()==gameImageNo){
+                imageScraper.cancel(true);
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
                 intent.putExtra("IS_MUTED",IS_MUTED);
