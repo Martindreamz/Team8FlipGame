@@ -3,6 +3,7 @@ package iss.workshop.team8flipgame.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -13,9 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.service.BGMusicService;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class HomeActivity extends AppCompatActivity
         implements View.OnClickListener , ServiceConnection {
@@ -25,6 +29,7 @@ public class HomeActivity extends AppCompatActivity
     int cardCount;
     String difficulty;
     SharedPreferences game_service;
+    SharedPreferences sharedPref;
     SharedPreferences.Editor game_service_editor;
     ImageButton toggle;
     Button play;
@@ -93,9 +98,34 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+        GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
+        GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+        Button play = findViewById(R.id.play);
+        if (play != null) {
+            play.setOnClickListener(this);
+        }
+        Button leader = findViewById(R.id.leaderBoard);
+        if (leader != null) {
+            leader.setOnClickListener(this);
+        }
+        Button credits = findViewById(R.id.credits);
+        if (credits != null) {
+            credits.setOnClickListener(this);
+        }
+        ImageButton toggle = findViewById(R.id.soundToggle);
+        if (toggle != null) {
+            toggle.setOnClickListener(this);
+        }
+
+        sharedPref = getSharedPreferences("music_service",MODE_PRIVATE);
+        if (!sharedPref.contains("IS_MUTED")) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("IS_MUTED", false);
+            editor.commit();
+        }
 
         //Bianca Music Service
-        if (!IS_MUTED){
+        if (!sharedPref.getBoolean("IS_MUTED",false)) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
@@ -108,28 +138,30 @@ public class HomeActivity extends AppCompatActivity
         int id = v.getId();
         if (id == R.id.play) {
             Intent intent = new Intent(this, ImagePickingActivity.class);
-            intent.putExtra("IS_MUTED",IS_MUTED); //pass music setting
             startActivity(intent);
 
         }
         else if (id == R.id.leaderBoard) {
             Intent intent = new Intent(this, LeaderBoardActivity.class);
-            intent.putExtra("IS_MUTED",IS_MUTED); //pass music setting
             startActivity(intent);
         }
         else if (id == R.id.soundToggle) {
-            if (IS_MUTED) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            if (sharedPref.getBoolean("IS_MUTED",false)) {
                 Log.i("MusicLog", "BGMusicService -> UNMUTED");
-                IS_MUTED = false;
+                editor.putBoolean("IS_MUTED", false);
                 Intent music = new Intent(this, BGMusicService.class);
                 bindService(music, this, BIND_AUTO_CREATE);
+                Toast.makeText(getApplicationContext(),"Un-muted music successfully!",Toast.LENGTH_SHORT).show();
             }
             else {
                 bgMusicService.mute();
                 unbindService(this);
-                IS_MUTED = true;
+                editor.putBoolean("IS_MUTED", true);
                 Log.i("MusicLog", "BGMusicService -> MUTED");
+                Toast.makeText(getApplicationContext(),"Muted music successfully!",Toast.LENGTH_SHORT).show();
             }
+            editor.commit();
         }
 
         else if (id == R.id.credits) {
@@ -138,7 +170,6 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    //Bianca Lifecycle
     @Override
     public void onPause(){
         super.onPause();
@@ -150,7 +181,7 @@ public class HomeActivity extends AppCompatActivity
         super.onResume();
         // restore
         if(bgMusicService!=null) bgMusicService.resume();
-        else if(!IS_MUTED) {
+        else if(!sharedPref.getBoolean("IS_MUTED",false)) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }

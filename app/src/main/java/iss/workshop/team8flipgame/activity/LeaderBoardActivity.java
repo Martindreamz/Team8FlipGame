@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,7 +21,6 @@ import iss.workshop.team8flipgame.service.DBService;
 
 public class LeaderBoardActivity extends AppCompatActivity
             implements ServiceConnection {
-
     BGMusicService bgMusicService;
     Boolean IS_MUTED = false ; //Setting of BG Music
 
@@ -40,8 +40,8 @@ public class LeaderBoardActivity extends AppCompatActivity
         }
 
         //Bianca Music Service
-        Intent intent = getIntent();
-        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        SharedPreferences sharedPref = getSharedPreferences("music_service", MODE_PRIVATE);
+        IS_MUTED = sharedPref.getBoolean("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);

@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,54 +40,48 @@ import iss.workshop.team8flipgame.adapter.ImageAdapter;
 import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.service.DBService;
 
-public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
+public class GameActivity extends AppCompatActivity
+        implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
+    ArrayList<Bitmap> barray = new ArrayList<>();
+    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
     ArrayList<Image> images;
-    BGMusicService bgMusicService;
-    static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
-    Boolean IS_MUTED = false ; //Setting of BG Music
+    ArrayList<Integer> selectedMatch;
     final Context context = this;
+    BGMusicService bgMusicService;
+    Boolean IS_MUTED = false ; //Setting of BG Music
     AlertDialog alertDialog;
     View dialogView;
-    Button buttonOK;
     EditText nameId;
     TextView txtScore;
-    public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
     GridView gridView;
-    ArrayList<Integer> selectedMatch;
     TextView matches;
     int matched;
     long elapsedMillis;
     Boolean clickable = true;
-
-    //For Score calculation
     private static final int NUM_OF_CARDS = 6;
     private int numOfAttempts = 0;
-
     private Chronometer chronometer;
     private boolean isGameFinished = false;
     private long totalTime = 0;
     private int totalScore=0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-//        variables
+       //variables
         images = new ArrayList<>();
         selectedMatch = new ArrayList<>();
         Intent intent = getIntent();
         ArrayList<Integer> selectedCell = intent.getIntegerArrayListExtra("selectedCells");
 
-//        top bar
+        //top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
         matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
 
-
-//        Grid view
+        //Grid view
         for(int i : selectedCell){
             images .add (ImagePickingActivity.selectedImage.get(i));
             images .add (ImagePickingActivity.selectedImage.get(i));
@@ -99,22 +94,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         gridView.setOnItemClickListener(this);
 
         //Bianca Music Service
-        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        SharedPreferences sharedPref = getSharedPreferences("music_service", MODE_PRIVATE);
+        IS_MUTED = sharedPref.getBoolean("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
 
-    }
-
-    public int calculateScore(long totalTime,int numOfAttempts){
-        return (int) ((5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
-    }
-
-    public void finishedGame(String name ,int totalScore){
-        Score scoreObj = new Score(name,totalScore);
-        DBService db = new DBService(this);
-        db.addScore(scoreObj);
     }
 
     @Override
@@ -134,13 +120,12 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             chronometer.start();
         }
     }
-
-    //Bianca Lifecycle
     @Override
     public void onPause(){
         super.onPause();
         // send notification : Want to continue or end the current Game
     }
+
     @Override
     public void onResume(){
         if (!isGameFinished)
@@ -164,7 +149,6 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
-    //Bianca Music Service
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
@@ -185,16 +169,21 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
-
             finishedGame(playerName,totalScore);
-
-            System.out.println(playerName);
             alertDialog.dismiss();
-            System.out.println("it is dismissed");
-
             Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
             startActivity(intentForLeaderBoard);
         }
+    }
+
+    public int calculateScore(long totalTime,int numOfAttempts){
+        return (int) ((5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
+    }
+
+    public void finishedGame(String name ,int totalScore){
+        Score scoreObj = new Score(name,totalScore);
+        DBService db = new DBService(this);
+        db.addScore(scoreObj);
     }
 
     public void dialogBox(long totalTime, int numOfAttempts){
@@ -246,6 +235,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             clickable=true;
         }
     };
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if(!selectedMatch.contains(Integer.valueOf(i))&&clickable==true){
@@ -267,10 +257,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             }
 
             if(barray.size()==2){
-                System.out.println("pos2");
                 if(barray.get(0) == barray.get(1)){
-                    System.out.println("pos2.1");
-                    System.out.println("same");
                     barray.clear();
                     seleted_view.clear();
                     matched++;
@@ -280,16 +267,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                         isGameFinished=true;
                         elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                         chronometer.stop();
-                        System.out.println("total time " + elapsedMillis);
                         //need to fix
-//                        dialogBox();
-//                        finishedGame(nameId.getText().toString(),calculateScore((int)elapsedMillis,numOfAttempts));
-
                     }
                 }
                 else{
-                    System.out.println("pos2.2");
-                    System.out.println("not same");
                     numOfAttempts++;
                     clickable=false;
                     selectedMatch.remove(selectedMatch.size()-1);

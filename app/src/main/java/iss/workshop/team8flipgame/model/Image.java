@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public class Image implements Serializable {
     private Bitmap bitmap ;
-    private Bitmap bitmap2;
     private int id;
     private int posID;
     private String bianca;// Bianca Test Commit hmmm...

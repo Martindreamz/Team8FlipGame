@@ -54,7 +54,8 @@ public class ImagePickingActivity extends AppCompatActivity
     TextView mSelected_imageText;
 //    public static MutableLiveData<Integer> listen; //No Longer in use but keep this, too powerful for next time
     BGMusicService bgMusicService;
-    public static Boolean IS_MUTED; //Setting of BG Music
+    SharedPreferences sharedPref;
+    boolean IS_MUTED;//Setting of BG Music
     private static int MASK_HINT_COLOR = 0x99ffffff;
     Boolean clickable;
     SharedPreferences global_pref;
@@ -99,7 +100,6 @@ public class ImagePickingActivity extends AppCompatActivity
         mFetchBtn = findViewById(R.id.BTfetch);
         mFetchBtn.setOnClickListener(this);
 
-
         //for gridview
         for(int i = 0;i<imageNo;i++){
             images.add(new Image(null,i));
@@ -118,8 +118,8 @@ public class ImagePickingActivity extends AppCompatActivity
         mSelected_imageText = findViewById(R.id.selected_image);
 
         //Bianca Music Service
-        Intent intent = getIntent();
-        IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
+        sharedPref = getSharedPreferences("music_service",MODE_PRIVATE);
+        IS_MUTED = sharedPref.getBoolean("IS_MUTED",false);
         if (!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
@@ -248,7 +248,6 @@ public class ImagePickingActivity extends AppCompatActivity
         // end everything
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if(clickable){
@@ -275,7 +274,6 @@ public class ImagePickingActivity extends AppCompatActivity
                 imageScraper.cancel(true);
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
-                intent.putExtra("IS_MUTED",IS_MUTED);
                 startActivity(intent);
             }
         }

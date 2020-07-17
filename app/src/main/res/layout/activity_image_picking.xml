@@ -12,6 +12,7 @@
 
         >
         <EditText
+            android:singleLine="true"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/url"
@@ -30,7 +31,7 @@
 
     <GridView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="550dp"
         android:id="@+id/gridView"
         android:columnWidth="100dp"
         android:gravity="center"
