@@ -22,5 +22,6 @@
     <string name="dia_points">20 points</string>
     <string name="play">play</string>
     <string name="leader_board">leaderboard</string>
+    <string name="difficulty">DIFFICULTY</string>
 
 </resources>

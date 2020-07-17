@@ -65,6 +65,8 @@ public class GameActivity extends AppCompatActivity
     private long totalTime = 0;
     private int totalScore=0;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,7 @@ public class GameActivity extends AppCompatActivity
             bindService(music, this, BIND_AUTO_CREATE);
         }
 
+        sharedPreferences = getSharedPreferences("game_service",MODE_PRIVATE);
     }
 
     @Override
@@ -182,7 +185,7 @@ public class GameActivity extends AppCompatActivity
     }
 
     public void finishedGame(String name ,int totalScore){
-        Score scoreObj = new Score(name,totalScore);
+        Score scoreObj = new Score(name,totalScore, sharedPreferences.getString("difficulty", "Easy"));
         DBService db = new DBService(this);
         db.addScore(scoreObj);
     }

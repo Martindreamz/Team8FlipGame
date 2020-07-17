@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="@string/name"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -22,9 +22,19 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="@string/score"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/difficultyTxt"
         app:layout_constraintLeft_toRightOf="@id/nameTxt" />
+
+    <TextView
+        android:id="@+id/difficultyTxt"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/difficulty"
+        android:textSize="20sp"
+        android:gravity="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/scoreTxt"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

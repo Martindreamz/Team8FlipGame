@@ -109,13 +109,6 @@ public class ImageAdapter extends BaseAdapter{
         return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
     }
 
-    public void finishedGame(int totalTime,int numOfAttempts){
-        int totalScore = calculateScore(60,15);
-        Score scoreObj = new Score("Theingi",totalScore);
-        DBService db = new DBService(mContext);
-        db.addScore(scoreObj);
-    }
-
     public void updateItemList(ArrayList<Image> newItemList) {
         this.images = newItemList;
         notifyDataSetChanged();

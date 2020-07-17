@@ -4,6 +4,7 @@ public class Score {
     private long id;
     private String name;
     private int score;
+    private String difficulty;
 
     public Score(int id, String name, int score) {
         this.id = id;
@@ -11,14 +12,23 @@ public class Score {
         this.score = score;
     }
 
-    public Score(String name, int score) {
+
+    public Score(String name, int score, String difficulty) {
         this.name = name;
         this.score = score;
+        this.difficulty = difficulty;
     }
 
     public Score() {
     }
 
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
     public long getId() {
         return id;
     }

@@ -35,9 +35,9 @@ public class ScoreAdapter extends ArrayAdapter {
         this.scores = scores;
 
         //text
-        Score score = new Score("Daryl", 123);
+        Score score = new Score("Daryl", 123, "Easy");
         scores.add(score);
-        Score score1 = new Score("Daryl1", 122434);
+        Score score1 = new Score("Daryl1", 122434, "Easy");
         scores.add(score1);
         Log.i("ScoreLog", "Add 2 initial records.");
 
@@ -62,6 +62,9 @@ public class ScoreAdapter extends ArrayAdapter {
         int scoreRecord = scores.get(position).getScore();
         score.setText(String.valueOf(scoreRecord));
         //score.setText(scores.get(position).getScore());
+
+        TextView difficulty = convertView.findViewById(R.id.difficultyTxt);
+        difficulty.setText(scores.get(position).getDifficulty());
 
         return convertView;
     }

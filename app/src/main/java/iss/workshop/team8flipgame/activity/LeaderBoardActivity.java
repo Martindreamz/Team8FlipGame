@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import iss.workshop.team8flipgame.service.BGMusicService;
@@ -23,15 +24,23 @@ public class LeaderBoardActivity extends AppCompatActivity
             implements ServiceConnection {
     BGMusicService bgMusicService;
     Boolean IS_MUTED = false ; //Setting of BG Music
+    SharedPreferences sharedPref;
+    List<Score> scores = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
+        sharedPref = getSharedPreferences("game_service", MODE_PRIVATE);
+        String difficulty = sharedPref.getString("difficulty", null);
+
         //retrieve list of scores from db
         DBService db = new DBService(this);
-        List<Score> scores = db.getAllScore();
+        if(difficulty == null)
+            scores = db.getAllScore();
+        else
+            scores = db.getAllScore(difficulty);
         //instantiate adapter
         ScoreAdapter adapter = new ScoreAdapter(this, R.layout.leaderboard_row, scores);
         ListView listView = findViewById(R.id.listView);
@@ -46,6 +55,8 @@ public class LeaderBoardActivity extends AppCompatActivity
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
+
+
     }
 
     //Bianca Music Service
