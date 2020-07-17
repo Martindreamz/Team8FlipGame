@@ -234,7 +234,7 @@ public class ImagePickingActivity extends AppCompatActivity
     public void onResume(){
         super.onResume();
         // restore
-        if(bgMusicService!=null) bgMusicService.resume();
+        if(bgMusicService!=null) bgMusicService.playMusic("MENU");
         else if(!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
