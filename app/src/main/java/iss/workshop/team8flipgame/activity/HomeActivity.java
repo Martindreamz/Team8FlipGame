@@ -69,12 +69,10 @@ public class HomeActivity extends AppCompatActivity
         int id = v.getId();
         if (id == R.id.play) {
             Intent intent = new Intent(this, ImagePickingActivity.class);
-            //intent.putExtra("IS_MUTED",IS_MUTED); //pass music setting
             startActivity(intent);
         }
         else if (id == R.id.leaderBoard) {
             Intent intent = new Intent(this, LeaderBoardActivity.class);
-            //intent.putExtra("IS_MUTED",IS_MUTED); //pass music setting
             startActivity(intent);
         }
         else if (id == R.id.soundToggle) {
