@@ -130,13 +130,25 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     }
     @Override
     public void onResume(){
+        if (!isGameFinished)
+        {
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
+            chronometer.start();
+        }
         super.onResume();
         // restore game
     }
+
     @Override
     public void onDestroy(){
         super.onDestroy();
         // end everything
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
     //Bianca Music Service
