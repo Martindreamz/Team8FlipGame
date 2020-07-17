@@ -277,6 +277,7 @@ public class GameActivity extends AppCompatActivity
         dialogView = inflater.inflate(R.layout.dialogbox, null);
         builder.setView(dialogView);
         alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
 
         txtScore = dialogView.findViewById(R.id.txtScore);

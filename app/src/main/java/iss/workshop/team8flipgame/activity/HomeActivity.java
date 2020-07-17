@@ -52,10 +52,12 @@ public class HomeActivity extends AppCompatActivity
         //play button
         play = findViewById(R.id.play);
         if (play != null) { play.setOnClickListener(this); }
-        play.setEnabled(false);
+        defaultPreference();
 
         //difficulty radio
         difficulties = findViewById(R.id.difficultyRD);
+        difficulties.check(R.id.easy_modeRD);
+
         difficulties.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -66,7 +68,6 @@ public class HomeActivity extends AppCompatActivity
                         game_service_editor.putString("difficulty",difficulty);
                         game_service_editor.putInt("cardcount",cardCount);
                         game_service_editor.commit();
-                        play.setEnabled(true);
                         break;
                     case R.id.normal_modeRD:
                         cardCount=10;
@@ -74,7 +75,6 @@ public class HomeActivity extends AppCompatActivity
                         game_service_editor.putString("difficulty",difficulty);
                         game_service_editor.putInt("cardcount",cardCount);
                         game_service_editor.commit();
-                        play.setEnabled(true);
                         break;
                     case R.id.hard_modeRD:
                         cardCount=14;
@@ -82,7 +82,6 @@ public class HomeActivity extends AppCompatActivity
                         game_service_editor.putString("difficulty",difficulty);
                         game_service_editor.putInt("cardcount",cardCount);
                         game_service_editor.commit();
-                        play.setEnabled(true);
                         break;
                 }
 
@@ -242,6 +241,18 @@ public class HomeActivity extends AppCompatActivity
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
 
     }
-
-
+    void defaultPreference(){
+        cardCount=6;
+        difficulty="Easy";
+        game_service_editor.putString("difficulty",difficulty);
+        game_service_editor.putInt("cardcount",cardCount);
+        game_service_editor.commit();
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }
