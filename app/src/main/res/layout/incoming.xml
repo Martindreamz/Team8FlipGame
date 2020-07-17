@@ -24,12 +24,34 @@
         android:background="@drawable/logo"
         android:layout_gravity="center_vertical|center_horizontal"
         />
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="90dp"
+            android:id="@+id/app_name_orange"
+            android:background="@drawable/app_name"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="90dp"
+            android:id="@+id/app_name_pink"
+            android:background="@drawable/app_name_pink"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/play"
         android:layout_width="128dp"
         android:layout_height="60dp"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/play" />
     <RadioGroup

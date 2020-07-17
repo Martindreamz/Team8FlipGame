@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -36,7 +37,8 @@ public class HomeActivity extends AppCompatActivity
     Button play;
     Button leader;
     Button credits;
-
+    ImageView logoOrange;
+    ImageView logoPink;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +46,45 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.incoming);
         game_service = getSharedPreferences("game_service",MODE_PRIVATE);
         game_service_editor = game_service.edit();
+        logoOrange=findViewById(R.id.app_name_orange);
+        logoPink=findViewById(R.id.app_name_pink);
+        logoPink.setVisibility(View.GONE);
 
         //top bar
         toggle = findViewById(R.id.soundToggle);
         if (toggle != null) { toggle.setOnClickListener(this); }
+
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        Thread.sleep(300);
+                        {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    System.out.println("here");
+                                    if(logoPink.getVisibility()==View.VISIBLE){
+                                        logoPink.setVisibility(View.GONE);
+                                    }else{logoPink.setVisibility(View.VISIBLE);}
+
+                                    if(logoOrange.getVisibility()==View.VISIBLE){
+                                        logoOrange.setVisibility(View.GONE);
+                                    }else {logoOrange.setVisibility(View.VISIBLE);}
+                                }
+                            });
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
 
         //play button
         play = findViewById(R.id.play);
