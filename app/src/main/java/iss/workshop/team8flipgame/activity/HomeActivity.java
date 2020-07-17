@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.service.BGMusicService;
+import pl.droidsonroids.gif.AnimationListener;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -98,8 +99,42 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-        GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
-        GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+        final GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
+        final GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+        gifDrawable.setLoopCount(5);
+        //Bianca :This special thread is to monitor the gif is finished.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        Thread.sleep(100);
+                        if(!gifDrawable.isRunning()) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gifImageView.setImageDrawable(null);//way1
+                                    Log.i("gif","not running.");
+                                }
+                            });
+                            break;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+        if (!gifDrawable.isRunning()) {
+
+        }
+
+
+        //onAnimationCompleted()
+
+        //gifDrawable.setVisible(false,false); notwork!
+
         Button play = findViewById(R.id.play);
         if (play != null) {
             play.setOnClickListener(this);

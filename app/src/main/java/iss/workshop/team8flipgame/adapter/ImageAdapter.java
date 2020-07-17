@@ -2,6 +2,7 @@ package iss.workshop.team8flipgame.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -29,6 +30,8 @@ import iss.workshop.team8flipgame.activity.ImagePickingActivity;
 import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.model.Score;
 import iss.workshop.team8flipgame.service.DBService;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ImageAdapter extends BaseAdapter{
 
@@ -82,25 +85,29 @@ public class ImageAdapter extends BaseAdapter{
             final Image image = images.get(pos);
             image.setPosID(pos);
 
-            if (view == null) {
-                final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                view = layoutInflater.inflate(R.layout.images2, null);
+            switch (images.size()){
+                case 12:{
+                    if (view == null) {
+                        final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                        view = layoutInflater.inflate(R.layout.images2, null);
+                    }
+                    break;}
+                case 20:{
+                    if (view == null) {
+                        final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                        view = layoutInflater.inflate(R.layout.images3, null);
+                    }
+                    break;}
+                case 28:{
+                    if (view == null) {
+                        final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                        view = layoutInflater.inflate(R.layout.images4, null);
+                    }
+                    break;}
             }
 
-            final ImageView imageView2 =view.findViewById(R.id.image2);
 
-            final Handler handler = new Handler();
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    seleted_view.get(1).setImageBitmap(null);
-                    seleted_view.get(1).setClickable(true);
-                    seleted_view.get(0).setClickable(true);
-                    seleted_view.get(0).setImageBitmap(null);
-                    barray.clear();
-                    seleted_view.clear();
-                }
-            };
+
         }
         return view;
     }
