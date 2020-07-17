@@ -38,20 +38,18 @@ import iss.workshop.team8flipgame.model.Image;
 import iss.workshop.team8flipgame.service.DBService;
 
 public class GameActivity extends AppCompatActivity implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
+    ArrayList<Bitmap> barray = new ArrayList<>();
+    ArrayList<ImageView> seleted_view = new ArrayList<>();
     ArrayList<Image> images;
+    ArrayList<Integer> selectedMatch;
     BGMusicService bgMusicService;
-    static ArrayList<Bitmap> matchedBitmap = new ArrayList<>();
     Boolean IS_MUTED = false ; //Setting of BG Music
     final Context context = this;
     AlertDialog alertDialog;
     View dialogView;
-    Button buttonOK;
     EditText nameId;
     TextView txtScore;
-    public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<ImageView> seleted_view = new ArrayList<>();
     GridView gridView;
-    ArrayList<Integer> selectedMatch;
     TextView matches;
     int matched;
     long elapsedMillis;
@@ -59,7 +57,6 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
     private int numOfAttempts = 0;
-
     private Chronometer chronometer;
     private boolean isGameFinished = false;
     private long totalTime = 0;
@@ -169,13 +166,10 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
-        //dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
-
             finishedGame(playerName,totalScore);
-
             System.out.println(playerName);
             alertDialog.dismiss();
             System.out.println("it is dismissed");
@@ -282,21 +276,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             }
 
             if(isGameFinished == true){
-                int id = view.getId();
                 dialogBox(elapsedMillis,numOfAttempts);
-                if(id == R.id.btnOK){
-                    nameId = dialogView.findViewById(R.id.name);
-                    String playerName = nameId.getText().toString();
-
-                    finishedGame(playerName,totalScore);
-
-                    System.out.println(playerName);
-                    alertDialog.dismiss();
-                    System.out.println("it is dismissed");
-
-                    Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
-                    startActivity(intentForLeaderBoard);
-                }
             }
         }
     }
