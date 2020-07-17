@@ -58,12 +58,13 @@ public class GameActivity extends AppCompatActivity
     int matched;
     long elapsedMillis;
     Boolean clickable = true;
-    private static final int NUM_OF_CARDS = 6;
+    private int NUM_OF_CARDS;
     private int numOfAttempts = 0;
     private Chronometer chronometer;
     private boolean isGameFinished = false;
     private long totalTime = 0;
     private int totalScore=0;
+    SharedPreferences global_pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,10 @@ public class GameActivity extends AppCompatActivity
         selectedMatch = new ArrayList<>();
         Intent intent = getIntent();
         ArrayList<Integer> selectedCell = intent.getIntegerArrayListExtra("selectedCells");
+        global_pref = getSharedPreferences("game_service",MODE_PRIVATE);
+        NUM_OF_CARDS = (int) global_pref.getInt("cardcount",0);
+        System.out.println(NUM_OF_CARDS);
+
 
         //top bar
         chronometer = findViewById(R.id.chronometer);
@@ -86,10 +91,22 @@ public class GameActivity extends AppCompatActivity
             images .add (ImagePickingActivity.selectedImage.get(i));
             images .add (ImagePickingActivity.selectedImage.get(i));
         }
+
+
+
         Collections.shuffle(images);
         gridView =findViewById(R.id.gridViewGame);
+        if(images.size()!=12){
+        gridView.setNumColumns(4);
+        }
+        System.out.println("pos 0");
+
         ImageAdapter imageAdapter = new ImageAdapter(this, images);
+        System.out.println("pos 1");
+
         gridView.setAdapter(imageAdapter);
+        System.out.println("pos 2");
+
         gridView.setVerticalScrollBarEnabled(false);
         gridView.setOnItemClickListener(this);
 
