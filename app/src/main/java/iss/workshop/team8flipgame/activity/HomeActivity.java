@@ -33,7 +33,6 @@ public class HomeActivity extends AppCompatActivity
         ImageButton toggle = findViewById(R.id.soundToggle);
         if (toggle != null) { toggle.setOnClickListener(this); }
 
-        //Bianca Music Service
         if (!IS_MUTED){
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
@@ -75,13 +74,13 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    //Bianca Lifecycle
     @Override
     public void onPause(){
         super.onPause();
         // pause music
         if(bgMusicService!=null) bgMusicService.pause();
     }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -93,6 +92,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
     }
+
     @Override
     public void onDestroy(){
         super.onDestroy();
@@ -101,7 +101,6 @@ public class HomeActivity extends AppCompatActivity
         // end everything
     }
 
-    //Bianca Music Service
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
@@ -116,6 +115,4 @@ public class HomeActivity extends AppCompatActivity
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
 
     }
-
-
 }

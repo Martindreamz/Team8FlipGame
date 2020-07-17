@@ -37,17 +37,17 @@ import iss.workshop.team8flipgame.R;
 public class ImagePickingActivity extends AppCompatActivity
         implements View.OnClickListener, ImageScraper.ICallback,
         ServiceConnection,AdapterView.OnItemClickListener {
+    public static ArrayList<Integer> selectedCell = new ArrayList<>();
+    public static ArrayList<Image> selectedImage = new ArrayList<>();
     ArrayList<Image> images = new ArrayList<>();
     Button mFetchBtn;
     EditText urlReader;
     ImageScraper imageScraper;
     static int imageNo =20;
+    public static int gameImageNo = 6;
     GridView gridView;
     ImageAdapter imageAdapter;
     int childPos=0;
-    public static ArrayList<Integer> selectedCell = new ArrayList<>();
-    public static ArrayList<Image> selectedImage = new ArrayList<>();
-    public static int gameImageNo = 6;
     ProgressBar progressBar;
     TextView mDownload_progressText;
     TextView mSelected_imageText;
@@ -92,7 +92,6 @@ public class ImagePickingActivity extends AppCompatActivity
         urlReader = findViewById(R.id.ETurl);
         mFetchBtn = findViewById(R.id.BTfetch);
         mFetchBtn.setOnClickListener(this);
-
 
         //for gridview
         for(int i = 0;i<imageNo;i++){
@@ -241,7 +240,6 @@ public class ImagePickingActivity extends AppCompatActivity
             unbindService(this);// unbindService
         // end everything
     }
-
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

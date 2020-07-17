@@ -20,7 +20,6 @@ import iss.workshop.team8flipgame.service.DBService;
 
 public class LeaderBoardActivity extends AppCompatActivity
             implements ServiceConnection {
-
     BGMusicService bgMusicService;
     Boolean IS_MUTED = false ; //Setting of BG Music
 
@@ -39,7 +38,6 @@ public class LeaderBoardActivity extends AppCompatActivity
             listView.setAdapter(adapter);
         }
 
-        //Bianca Music Service
         Intent intent = getIntent();
         IS_MUTED = intent.getBooleanExtra("IS_MUTED",false);
         if (!IS_MUTED) {
