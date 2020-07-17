@@ -34,12 +34,12 @@ public class ScoreAdapter extends ArrayAdapter {
         this.context = context;
         this.scores = scores;
 
-        //text
+      /*  //text
         Score score = new Score("Daryl", 123, "Easy");
         scores.add(score);
         Score score1 = new Score("Daryl1", 122434, "Easy");
         scores.add(score1);
-        Log.i("ScoreLog", "Add 2 initial records.");
+        Log.i("ScoreLog", "Add 2 initial records.");*/
 
         for(int i=0; i<scores.size(); i++){
             add(null);
