@@ -83,6 +83,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 //        top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
+        matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
 
 
 //        Grid view
