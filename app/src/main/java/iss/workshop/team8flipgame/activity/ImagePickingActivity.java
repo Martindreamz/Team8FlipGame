@@ -35,8 +35,8 @@ import iss.workshop.team8flipgame.ImageScraper;
 import iss.workshop.team8flipgame.R;
 
 public class ImagePickingActivity extends AppCompatActivity
-        implements View.OnClickListener, ImageScraper.ICallback, ServiceConnection,AdapterView.OnItemClickListener {
-
+        implements View.OnClickListener, ImageScraper.ICallback,
+        ServiceConnection,AdapterView.OnItemClickListener {
     ArrayList<Image> images = new ArrayList<>();
     Button mFetchBtn;
     EditText urlReader;
@@ -62,7 +62,6 @@ public class ImagePickingActivity extends AppCompatActivity
         public void handleMessage(@NonNull Message msg){
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(childPos);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
-            //if
             currentImage.setScaleType(ImageView.ScaleType.FIT_XY);
             currentImage.setImageBitmap(((Image) msg.obj).getBitmap());
             selectedImage.add(((Image)msg.obj));
@@ -93,6 +92,7 @@ public class ImagePickingActivity extends AppCompatActivity
         urlReader = findViewById(R.id.ETurl);
         mFetchBtn = findViewById(R.id.BTfetch);
         mFetchBtn.setOnClickListener(this);
+
 
         //for gridview
         for(int i = 0;i<imageNo;i++){
@@ -150,9 +150,8 @@ public class ImagePickingActivity extends AppCompatActivity
             progressBar.setVisibility(View.VISIBLE);
             mDownload_progressText.setVisibility(View.VISIBLE);
             mSelected_imageText.setVisibility(View.GONE);
-            reset();
-
-
+            reset();//Martin clear the data memory
+            clearImages();//Bianca Reset all images to null
             mDownload_progressText.setText("Downloading "+selectedImage.size()+" of " + imageNo+" images...");
             System.out.println("start scrapping");
             scrapImage();
@@ -164,7 +163,16 @@ public class ImagePickingActivity extends AppCompatActivity
         selectedCell.clear();
         selectedImage.clear();
         progressBar.setProgress(0);
+    }
 
+    //Bianca Reset all images to null (only show Background)
+    void clearImages() {
+        for (int i = 0; i < imageNo; i++) {
+            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
+            ImageView currentImage = (ImageView) gridElement.getChildAt(0);
+            currentImage.setImageBitmap(null); //work!
+            if (currentImage.getColorFilter() != null) currentImage.setColorFilter(null); //Try
+        }
     }
 
     void scrapImage(){

@@ -181,7 +181,6 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onClick(View view){
         int id = view.getId();
-        //dialogBox();
         if(id == R.id.btnOK){
             nameId = dialogView.findViewById(R.id.name);
             String playerName = nameId.getText().toString();
@@ -299,21 +298,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             }
 
             if(isGameFinished == true){
-                int id = view.getId();
                 dialogBox(elapsedMillis,numOfAttempts);
-                if(id == R.id.btnOK){
-                    nameId = dialogView.findViewById(R.id.name);
-                    String playerName = nameId.getText().toString();
-
-                    finishedGame(playerName,totalScore);
-
-                    System.out.println(playerName);
-                    alertDialog.dismiss();
-                    System.out.println("it is dismissed");
-
-                    Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
-                    startActivity(intentForLeaderBoard);
-                }
             }
         }
     }

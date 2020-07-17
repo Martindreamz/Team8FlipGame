@@ -75,10 +75,6 @@ public class ImageAdapter extends BaseAdapter{
             }
             final ImageView imageView1 = view.findViewById(R.id.image);
             imageView1.setImageBitmap(image.getBitmap());
-            if (imageView1.getColorFilter() != null) {
-                Log.i("ColorFilter","cleared after new fetch.");
-                imageView1.clearColorFilter();
-            }
         }
 
         if(mContext instanceof GameActivity){
