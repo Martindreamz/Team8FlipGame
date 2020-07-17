@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,7 +52,7 @@ public class ImagePickingActivity extends AppCompatActivity
     int childPos=0;
     public static ArrayList<Integer> selectedCell = new ArrayList<>();
     public static ArrayList<Image> selectedImage = new ArrayList<>();
-    public static int gameImageNo = 6;
+    public static int gameImageNo;
     ProgressBar progressBar;
     TextView mDownload_progressText;
     TextView mSelected_imageText;
@@ -60,6 +61,8 @@ public class ImagePickingActivity extends AppCompatActivity
     public static Boolean IS_MUTED; //Setting of BG Music
     private static int MASK_HINT_COLOR = 0x99ffffff;
     Boolean clickable;
+    SharedPreferences global_pref;
+
     @SuppressLint("HandlerLeak")
     Handler mainHandler = new Handler(){
         public void handleMessage(@NonNull Message msg){
@@ -92,6 +95,9 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_picking);
         clickable = false;
+        global_pref = getSharedPreferences("game_service",MODE_PRIVATE);
+        gameImageNo = (int) global_pref.getInt("cardcount",0);
+        System.out.println(gameImageNo);
         //for top bar
         urlReader = findViewById(R.id.ETurl);
         mFetchBtn = findViewById(R.id.BTfetch);
@@ -280,5 +286,11 @@ public class ImagePickingActivity extends AppCompatActivity
                 startActivity(intent);
             }
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,HomeActivity.class);
+        startActivity(intent);
     }
 }
