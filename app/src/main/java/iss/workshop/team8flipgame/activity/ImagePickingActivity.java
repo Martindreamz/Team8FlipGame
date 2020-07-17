@@ -37,7 +37,6 @@ import iss.workshop.team8flipgame.R;
 public class ImagePickingActivity extends AppCompatActivity
         implements View.OnClickListener, ImageScraper.ICallback,
         ServiceConnection,AdapterView.OnItemClickListener {
-
     ArrayList<Image> images = new ArrayList<>();
     Button mFetchBtn;
     EditText urlReader;
