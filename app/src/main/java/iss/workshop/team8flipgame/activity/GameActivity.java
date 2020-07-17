@@ -83,6 +83,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
 //        top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
+        matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
 
 
 //        Grid view
@@ -114,6 +115,13 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
         Score scoreObj = new Score(name,totalScore);
         DBService db = new DBService(this);
         db.addScore(scoreObj);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,ImagePickingActivity.class);
+        startActivity(intent);
     }
 
     @Override
