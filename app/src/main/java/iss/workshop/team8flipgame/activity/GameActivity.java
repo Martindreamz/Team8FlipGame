@@ -55,6 +55,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
     TextView matches;
     int matched;
     long elapsedMillis;
+    Boolean clickable = true;
 
     //For Score calculation
     private static final int NUM_OF_CARDS = 6;
@@ -231,11 +232,12 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
             seleted_view.get(0).setImageBitmap(null);
             barray.clear();
             seleted_view.clear();
+            clickable=true;
         }
     };
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(!selectedMatch.contains(Integer.valueOf(i))){
+        if(!selectedMatch.contains(Integer.valueOf(i))&&clickable==true){
             System.out.println("Game Activity " + i);
 
             Image image = images.get(i);
@@ -275,6 +277,7 @@ public class GameActivity extends AppCompatActivity implements ServiceConnection
                     System.out.println("pos2.2");
                     System.out.println("not same");
                     numOfAttempts++;
+                    clickable=false;
                     selectedMatch.remove(selectedMatch.size()-1);
                     selectedMatch.remove(selectedMatch.size()-1);
                     handler.postDelayed(runnable,1000);
