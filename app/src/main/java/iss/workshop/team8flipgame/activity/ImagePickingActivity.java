@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -91,12 +94,16 @@ public class ImagePickingActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_picking);
+
+       //variables
         clickable = false;
         global_pref = getSharedPreferences("game_service",MODE_PRIVATE);
         gameImageNo = (int) global_pref.getInt("cardcount",0);
         System.out.println(gameImageNo);
+
         //for top bar
         urlReader = findViewById(R.id.ETurl);
+        urlReader.addTextChangedListener(validurl);
         mFetchBtn = findViewById(R.id.BTfetch);
         mFetchBtn.setOnClickListener(this);
 
@@ -203,7 +210,13 @@ public class ImagePickingActivity extends AppCompatActivity
     }
 
     @Override
-    public void makeToast(String message) {
+    public void makeToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     //Bianca Music Service
@@ -234,7 +247,7 @@ public class ImagePickingActivity extends AppCompatActivity
     public void onResume(){
         super.onResume();
         // restore
-        if(bgMusicService!=null) bgMusicService.resume();
+        if(bgMusicService!=null) bgMusicService.playMusic("MENU");
         else if(!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
@@ -284,4 +297,23 @@ public class ImagePickingActivity extends AppCompatActivity
         Intent intent = new Intent(this,HomeActivity.class);
         startActivity(intent);
     }
+
+    private TextWatcher validurl = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String url = urlReader.getText().toString().trim();
+
+            mFetchBtn.setEnabled(!url.isEmpty() && (url.contains("http://")||url.contains("https://")));
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 }

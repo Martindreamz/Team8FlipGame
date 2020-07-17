@@ -26,12 +26,18 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
     protected Void doInBackground(String... strings) {
         String html = HTMLscraper(strings[0]);
         if(html == null) {
-            if(this.callback != null) callback.makeToast("Check the search address");
-            return null;
+            if(this.callback != null) {
+                callback.makeToast("Check the search address, page invalid");
+                return null;
+            }
         }
         ArrayList<URL> imageURLs = imageURLs(html);
 
         if(imageURLs.size()< ImagePickingActivity.getImageNo()){
+            if(imageURLs.size()==0){
+                if(this.callback != null) callback.makeToast("There no possible images.  Please try another search term.");
+                return null;
+            }
             if(this.callback != null) callback.makeToast("There are only "+imageURLs.size()+" possible images.  Please try another search term.");
             return null;
         }
@@ -55,6 +61,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
             e.printStackTrace();
             return null;
         }
+//        System.out.println(sb.toString());
         return sb.toString();
     }
 
