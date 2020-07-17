@@ -162,9 +162,6 @@ public class HomeActivity extends AppCompatActivity
 
             }
         }).start();
-        if (!gifDrawable.isRunning()) {
-
-        }
 
 
         //onAnimationCompleted()

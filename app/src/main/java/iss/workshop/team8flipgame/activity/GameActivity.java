@@ -1,15 +1,21 @@
 package iss.workshop.team8flipgame.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -27,6 +33,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
@@ -67,6 +74,20 @@ public class GameActivity extends AppCompatActivity
     SharedPreferences global_pref;
 
     SharedPreferences sharedPreferences;
+    private static final String CHANNEL_ID = "888888";
+    private static final String CHANNEL_NAME = "Message Notification Channel";
+    private static final String CHANNEL_DESCRIPTION = "This channel is for displaying messages";
+
+    private void createNotificationChannel() {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel( CHANNEL_ID, CHANNEL_NAME, importance);
+            channel.setDescription(CHANNEL_DESCRIPTION);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +161,7 @@ public class GameActivity extends AppCompatActivity
             chronometer.start();
         }
     }
-    @Override
-    public void onPause(){
-        super.onPause();
-        // send notification : Want to continue or end the current Game
-    }
+
 
     @Override
     public void onResume(){
@@ -152,24 +169,73 @@ public class GameActivity extends AppCompatActivity
         {
             chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
             chronometer.start();
+            Toast.makeText(getApplicationContext(),
+                    "Start Timing. GO!",Toast.LENGTH_SHORT).show();
         }
         super.onResume();
-        // restore game
+        // restore game?
+    }
+
+    @Override
+    public void onPause(){ // This happens when finishing game and quit the game just before onStop()
+        super.onPause();
+        if (!isGameFinished) {
+            // send notification : Want to continue or end the current Game
+            Toast.makeText(getApplicationContext(),
+                    "You left the game, please come back in 5 seconds to continue!", Toast.LENGTH_LONG).show();
+            createNotificationChannel();
+            createNotification(1);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (!getLifecycle().getCurrentState().name().equals("RESUMED")
+                        || !getLifecycle().getCurrentState().name().equals("STARTED")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("gameLife", "After 5 seconds, this turn is over!");
+                                    if (bgMusicService!=null) bgMusicService.pause();
+                                    Toast.makeText(getApplicationContext(),
+                                            "This turn is over!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    createNotification(2);
+                                    //onDestroy();//cannot destroy since fragments have been destriyed.
+                                }
+                            });
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        // end everything
+        //if(bgMusicService!=null) unbindService(this);// unbindService
+        // end GAME
     }
 
     @Override
-    public void onStop() {
+    public void finish(){
+        if(bgMusicService!=null)
+            unbindService(this);// unbindService
+        super.finish();
+    }
+
+    @Override
+    public void onStop() { // This happens when finishing game and quit the game (activity invisible)
         super.onStop();
         elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
-    //@Override
+        //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
         if(binder != null) {
@@ -192,8 +258,7 @@ public class GameActivity extends AppCompatActivity
             String playerName = nameId.getText().toString();
             finishedGame(playerName,totalScore);
             alertDialog.dismiss();
-            Intent intentForLeaderBoard = new Intent(this,LeaderBoardActivity.class);
-            startActivity(intentForLeaderBoard);
+            finish();
         }
     }
 
@@ -306,6 +371,34 @@ public class GameActivity extends AppCompatActivity
             }
         }
     }
+
+    private void createNotification(int times) {
+        NotificationCompat.Builder builder =
+            new NotificationCompat.Builder(this, CHANNEL_ID);
+        if (times == 1 ) {
+            builder.setSmallIcon(R.drawable.games)
+                    .setContentTitle("Oops!")
+                    .setContentText("You just left the game, please come back in 5 seconds to continue!" +
+                            "Otherwise you will lose this turn and need to restart with a new game.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        }
+        if (times == 2 ) {
+            builder.setSmallIcon(R.drawable.games)
+                    .setContentTitle("Come On!")
+                    .setContentText("Current game has been stopped already." +
+                            "Wanna try again?")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setTimeoutAfter(60000);
+        }
+
+        Notification notification = builder.build();
+        int notificationId = 99999;
+        NotificationManagerCompat mgr = NotificationManagerCompat.from(this);
+        mgr.notify(notificationId, notification);
+    }
+
 
 
 }
