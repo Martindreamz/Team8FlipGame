@@ -15,11 +15,18 @@
         android:src="@android:drawable/ic_media_play"
         android:background="@color/red"/>
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifImageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/home_animation"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
     <Button
         android:id="@+id/play"
         android:layout_width="128dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="40dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/play" />
@@ -27,18 +34,18 @@
     <Button
         android:id="@+id/leaderBoard"
         android:layout_width="128dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/leader_board"/>
 
     <Button
         android:id="@+id/credits"
         android:layout_width="128dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center|bottom"
         android:text="@string/credits" />
 

@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.service.BGMusicService;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class HomeActivity extends AppCompatActivity
         implements View.OnClickListener , ServiceConnection {
@@ -24,6 +26,8 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incoming);
+        GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
+        GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
         Button play = findViewById(R.id.play);
         if (play != null) { play.setOnClickListener(this); }
         Button leader = findViewById(R.id.leaderBoard);
