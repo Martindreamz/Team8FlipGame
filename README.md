@@ -42,3 +42,4 @@ This is an Android game application.
   
 ### External Libraries
   - EasyFlipView
+  - gifDrawable
