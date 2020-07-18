@@ -210,15 +210,30 @@ public class ImagePickingActivity extends AppCompatActivity
             mainHandler.sendMessage(msg);}
     }
 
+    //Handling Toast Message together
+    // this is used in imageScrapper
     @Override
-    public void makeToast(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+    public void makeToast(String message) {
+        showToast(message,Toast.LENGTH_SHORT);
     }
+
+    // all toast message will be shipped via this attribute so that it only show one piece at one time.
+    public Toast toastMsg;
+    public void showToast(String text,int toastLength) {
+        if(toastMsg == null) {
+            toastMsg = Toast.makeText(this, text, toastLength);
+        } else {
+            toastMsg.setText(text);
+            toastMsg.setDuration(toastLength);
+        }
+        toastMsg.show();
+    }
+    public void cancelToast() {
+        if (toastMsg != null) {
+            toastMsg.cancel();
+        }
+    }
+
 
     //Bianca Music Service
     //@Override
@@ -242,7 +257,7 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onPause();
         // pause music
         if(bgMusicService!=null) bgMusicService.pause();
-        if (autoStartGame != null && autoStartGame.interrupted())  autoStartGame.interrupt();
+        if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
 
     }
 
@@ -252,8 +267,8 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onResume();
         Log.i("gameLife", "current picked Number: " + selectedImage.size());
         if (selectedCell.size()==gameImageNo){
-            Toast.makeText(this,"If you do not change your choice, the game will auto-start after 5 seconds.",
-                    Toast.LENGTH_LONG).show();
+            showToast("If you do not change your choice, the game will auto-start after 5 seconds.",Toast.LENGTH_LONG);
+            //Toast.makeText(this,,Toast.LENGTH_LONG).show();
             autoStartGame = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -296,12 +311,8 @@ public class ImagePickingActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (selectedCell.size()>gameImageNo){
-            Toast.makeText(this,"U cannot choose more than "
-                    +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT).show();
-        }
         if(clickable){
-            if (autoStartGame != null && autoStartGame.interrupted())  autoStartGame.interrupt();
+            if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             if(currentImage.getColorFilter() == null){
@@ -320,8 +331,11 @@ public class ImagePickingActivity extends AppCompatActivity
                 selectedCell.add(i);
                 mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
             }
-
-            if (selectedCell.size()==gameImageNo){
+            if (selectedCell.size()>gameImageNo){
+                showToast("U cannot choose more than "
+                        +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT);
+            }
+            else if (selectedCell.size()==gameImageNo){
                 imageScraper.cancel(true);
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
@@ -331,8 +345,12 @@ public class ImagePickingActivity extends AppCompatActivity
     }
     @Override
     public void onBackPressed() {
+        cancelToast();
         super.onBackPressed();
+        // if clicking back, kill the AUTO-start-game thread
+        if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
         Intent intent = new Intent(this,HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear game
         startActivity(intent);
     }
 
