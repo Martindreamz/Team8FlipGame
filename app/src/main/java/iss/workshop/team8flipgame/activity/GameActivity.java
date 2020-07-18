@@ -197,6 +197,7 @@ public class GameActivity extends AppCompatActivity
                     "You left the game, please come back in 5 seconds to continue!", Toast.LENGTH_LONG).show();
             createNotificationChannel();
             createNotification(1);
+            //this thread pending interrupted?
             new Thread(new Runnable() {
                 @Override
                 public void run() {
