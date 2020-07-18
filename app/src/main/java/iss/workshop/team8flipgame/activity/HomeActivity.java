@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity
     Button credits;
     ImageView logoOrange;
     ImageView logoPink;
+    Thread logoService;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class HomeActivity extends AppCompatActivity
         if (toggle != null) { toggle.setOnClickListener(this); }
 */
 
-        new Thread(new Runnable() {
+        logoService = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -67,7 +68,6 @@ public class HomeActivity extends AppCompatActivity
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //System.out.println("here");
                                     if(logoPink.getVisibility()==View.VISIBLE){
                                         logoPink.setVisibility(View.GONE);
                                     }else{logoPink.setVisibility(View.VISIBLE);}
@@ -84,7 +84,8 @@ public class HomeActivity extends AppCompatActivity
                 }
 
             }
-        }).start();
+        });
+        logoService.start();
 
         //play button
         play = findViewById(R.id.play);
@@ -254,6 +255,7 @@ public class HomeActivity extends AppCompatActivity
         super.onPause();
         // pause music
         if(bgMusicService!=null) bgMusicService.pause();
+        logoService.interrupt();
     }
     @Override
     public void onResume(){
