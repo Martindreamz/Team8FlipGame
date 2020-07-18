@@ -23,5 +23,6 @@
     <string name="play">play</string>
     <string name="leader_board">leaderboard</string>
     <string name="difficulty">DIFFICULTY</string>
+    <string name="bug_found">Found a bug ?</string>
 
 </resources>

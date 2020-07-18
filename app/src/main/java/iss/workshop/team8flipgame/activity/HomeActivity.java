@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.incoming);
+        setContentView(R.layout.activity_home);
         game_pref = getSharedPreferences("game_service",MODE_PRIVATE);
         game_pref_editor = game_pref.edit();
         logoOrange=findViewById(R.id.app_name_orange);
@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-        final GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
+        final GifImageView gifImageView = findViewById(R.id.gifImageView);
         final GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
         /* follow Martin's need keep the gif running
         gifDrawable.setLoopCount(5);
@@ -216,7 +216,7 @@ public class HomeActivity extends AppCompatActivity
         else if (id == R.id.flipToggle) {
             //ImageView toggle = findViewById(R.id.soundToggle);
 
-            EasyFlipView currentView= (EasyFlipView) findViewById(R.id.flipToggle);
+            EasyFlipView currentView= findViewById(R.id.flipToggle);
             currentView.flipTheView();
             music_pref_editor = music_pref.edit();
             if (music_pref.getBoolean("IS_MUTED",false)) {

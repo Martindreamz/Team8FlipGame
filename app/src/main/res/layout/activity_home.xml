@@ -8,6 +8,7 @@
     android:background="@color/home_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    //mute toggle
     <com.wajahatkarim3.easyflipview.EasyFlipView
         android:id="@+id/flipToggle"
         android:layout_width="50dp"
@@ -41,6 +42,7 @@
             android:scaleType="fitXY" />
     </com.wajahatkarim3.easyflipview.EasyFlipView>
 
+    //wontae gif (yes it's called wontae cat)
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImageView"
         android:layout_width="150dp"
@@ -49,6 +51,8 @@
         android:background="@drawable/logo"
         android:layout_gravity="center_vertical|center_horizontal"
         />
+
+    //home made gif
     <LinearLayout
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
@@ -68,17 +72,19 @@
             android:id="@+id/app_name_pink"
             android:background="@drawable/app_name_pink_nobg"
             android:layout_gravity="center"/>
-
     </LinearLayout>
 
+    //play button
     <Button
         android:id="@+id/play"
         android:layout_width="128dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/play" />
+
+    //difficulty radio
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -104,6 +110,8 @@
             android:id="@+id/hard_modeRD"
             android:gravity="left"/>
     </RadioGroup>
+
+    //radio button description
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -126,6 +134,7 @@
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    //leader board button
     <Button
         android:id="@+id/leaderBoard"
         android:layout_width="128dp"
@@ -135,12 +144,12 @@
         android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/leader_board"/>
 
+    //credits button
     <Button
         android:id="@+id/credits"
         android:layout_width="128dp"
         android:layout_height="60dp"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
         android:layout_gravity="center|bottom"
         android:text="@string/credits" />
 

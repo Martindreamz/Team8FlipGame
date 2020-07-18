@@ -1,37 +1,19 @@
 package iss.workshop.team8flipgame.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import androidx.annotation.RequiresApi;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import iss.workshop.team8flipgame.activity.GameActivity;
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.activity.ImagePickingActivity;
 import iss.workshop.team8flipgame.model.Image;
-import iss.workshop.team8flipgame.model.Score;
-import iss.workshop.team8flipgame.service.DBService;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class ImageAdapter extends BaseAdapter{
     private  ArrayList<Image> images;
@@ -82,19 +64,19 @@ public class ImageAdapter extends BaseAdapter{
                 case 12:{
                     if (view == null) {
                         final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                        view = layoutInflater.inflate(R.layout.images2, null);
+                        view = layoutInflater.inflate(R.layout.card_mode_easy, null);
                     }
                     break;}
                 case 20:{
                     if (view == null) {
                         final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                        view = layoutInflater.inflate(R.layout.images3, null);
+                        view = layoutInflater.inflate(R.layout.card_mode_normal, null);
                     }
                     break;}
                 case 28:{
                     if (view == null) {
                         final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                        view = layoutInflater.inflate(R.layout.images4, null);
+                        view = layoutInflater.inflate(R.layout.card_mode_hard, null);
                     }
                     break;}
             }

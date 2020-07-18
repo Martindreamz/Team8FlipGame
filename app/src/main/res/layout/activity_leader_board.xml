@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.LeaderBoardActivity"
-    android:background="@drawable/catwallpaper1">
+    android:background="@drawable/leader_board_bg"
+
+>
 
     <TextView
         android:id="@+id/title_leaderboard"
