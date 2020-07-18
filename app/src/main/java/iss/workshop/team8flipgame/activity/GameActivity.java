@@ -146,14 +146,26 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        Toast.makeText(this,"This turn is over, pick image again.",Toast.LENGTH_LONG).show();
         super.onBackPressed();
-        Intent intent = new Intent(this,ImagePickingActivity.class);
-        startActivity(intent);
+        isGameFinished=true;
+        if(bgMusicService!=null) {
+            bgMusicService.mute();
+            //unbindService(this);
+        }
+        finish();//dunt reset the images still show chosen stage
     }
 
     @Override
-    public void onStart()
-    {
+    public void finish() {
+        if(!isGameFinished && bgMusicService!=null) {
+            unbindService(this);
+        }
+        super.finish();
+    }
+
+    @Override
+    public void onStart() {
         super.onStart();
         if (!isGameFinished)
         {
@@ -173,7 +185,7 @@ public class GameActivity extends AppCompatActivity
                     "Start Timing. GO!",Toast.LENGTH_SHORT).show();
         }
         super.onResume();
-        // restore game?
+        // restore game
     }
 
     @Override
@@ -195,10 +207,10 @@ public class GameActivity extends AppCompatActivity
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.i("gameLife", "After 5 seconds, this turn is over!");
+                                    //Log.i("gameLife", "After 5 seconds, this turn is over!");
                                     if (bgMusicService!=null) bgMusicService.pause();
                                     Toast.makeText(getApplicationContext(),
-                                            "This turn is over!", Toast.LENGTH_SHORT).show();
+                                            "After 5 seconds, this turn is over!", Toast.LENGTH_SHORT).show();
                                     finish();
                                     createNotification(2);
                                     //onDestroy();//cannot destroy since fragments have been destriyed.
@@ -218,15 +230,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onDestroy(){
         super.onDestroy();
-        //if(bgMusicService!=null) unbindService(this);// unbindService
-        // end GAME
-    }
-
-    @Override
-    public void finish(){
-        if(bgMusicService!=null)
-            unbindService(this);// unbindService
-        super.finish();
+        //unbind service before go to on-destroy
     }
 
     @Override
@@ -260,8 +264,8 @@ public class GameActivity extends AppCompatActivity
             alertDialog.dismiss();
 
             Intent intent = new Intent(this, ImagePickingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            finish();
         }
     }
 
