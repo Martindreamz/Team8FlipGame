@@ -62,6 +62,7 @@ public class ImagePickingActivity extends AppCompatActivity
     private static int MASK_HINT_COLOR = 0x99ffffff;
     Boolean clickable;
     SharedPreferences global_pref;
+    Thread autoStartGame;
 
 
     @SuppressLint("HandlerLeak")
@@ -209,15 +210,30 @@ public class ImagePickingActivity extends AppCompatActivity
             mainHandler.sendMessage(msg);}
     }
 
+    //Handling Toast Message together
+    // this is used in imageScrapper
     @Override
-    public void makeToast(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+    public void makeToast(String message) {
+        showToast(message,Toast.LENGTH_SHORT);
     }
+
+    // all toast message will be shipped via this attribute so that it only show one piece at one time.
+    public Toast toastMsg;
+    public void showToast(String text,int toastLength) {
+        if(toastMsg == null) {
+            toastMsg = Toast.makeText(this, text, toastLength);
+        } else {
+            toastMsg.setText(text);
+            toastMsg.setDuration(toastLength);
+        }
+        toastMsg.show();
+    }
+    public void cancelToast() {
+        if (toastMsg != null) {
+            toastMsg.cancel();
+        }
+    }
+
 
     //Bianca Music Service
     //@Override
@@ -241,16 +257,48 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onPause();
         // pause music
         if(bgMusicService!=null) bgMusicService.pause();
+        if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
+
     }
 
     @Override
     public void onResume(){
+        //Log.i("gameLife", "TEST");
         super.onResume();
-        // restore
+        Log.i("gameLife", "current picked Number: " + selectedImage.size());
+        if (selectedCell.size()==gameImageNo){
+            showToast("If you do not change your choice, the game will auto-start after 5 seconds.",Toast.LENGTH_LONG);
+            clickable = true;
+            autoStartGame = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (selectedCell.size()==gameImageNo) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("gameLife", "AUTO start!");
+                                    Intent intent = new Intent(getApplicationContext(),GameActivity.class);
+                                    intent.putExtra("selectedCells",selectedCell);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            autoStartGame.start();
+        // restore music
         if(bgMusicService!=null) bgMusicService.playMusic("MENU");
         else if(!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
+        }
+
         }
     }
     @Override
@@ -263,11 +311,8 @@ public class ImagePickingActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (selectedCell.size()>gameImageNo){
-            Toast.makeText(this,"U cannot choose more than "
-                    +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT).show();
-        }
         if(clickable){
+            if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             if(currentImage.getColorFilter() == null){
@@ -286,9 +331,13 @@ public class ImagePickingActivity extends AppCompatActivity
                 selectedCell.add(i);
                 mSelected_imageText.setText(selectedCell.size()+" out of "+gameImageNo+" images selected");
             }
-
-            if (selectedCell.size()==gameImageNo){
+            if (selectedCell.size()>gameImageNo){
+                showToast("U cannot choose more than "
+                        +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT);
+            }
+            else if (selectedCell.size()==gameImageNo){
                 imageScraper.cancel(true);
+                clickable = false;
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
                 startActivity(intent);
@@ -297,8 +346,12 @@ public class ImagePickingActivity extends AppCompatActivity
     }
     @Override
     public void onBackPressed() {
+        cancelToast();
         super.onBackPressed();
+        // if clicking back, kill the AUTO-start-game thread
+        if (autoStartGame != null && !autoStartGame.interrupted())  autoStartGame.interrupt();
         Intent intent = new Intent(this,HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear game
         startActivity(intent);
     }
 

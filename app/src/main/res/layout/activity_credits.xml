@@ -52,7 +52,6 @@
             app:layout_constraintTop_toBottomOf="@id/team8Members"
             tools:layout_editor_absoluteX="0dp" />
     </LinearLayout>
-
     <LinearLayout
         android:id="@+id/songLicense"
         app:layout_constraintTop_toBottomOf="@id/memberNames"
@@ -84,5 +83,27 @@
             android:text="@string/lincense_detail"
             android:textSize="30dp"
             android:textAlignment="center"/>
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/contact"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/emailContact"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Contact Us"
+            android:textSize="25dp"
+            tools:ignore="MissingConstraints"
+            />
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

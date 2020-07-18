@@ -38,6 +38,10 @@ public class DBService extends SQLiteOpenHelper {
                 KEY_DIFFICULTY + " TEXT"
                 + " )";
         sqLiteDatabase.execSQL(createDb);
+
+        //Seed data
+        addScore(new Score("Daryl", 123, "Hard"));
+        addScore(new Score("Daryl1", 222, "Normal"));
     }
 
     //upgrade db if older version exists

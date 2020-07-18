@@ -5,41 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="top"
-    android:background="@color/home_bg"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/home_bg">
 
-    <com.wajahatkarim3.easyflipview.EasyFlipView
-        android:id="@+id/flipToggle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <ImageButton
+        android:id="@+id/soundToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        app:autoFlipBack="false"
-        app:flipDuration="400"
-        app:flipEnabled="true"
-        app:flipFrom="right"
-        app:flipOnTouch="false"
-        app:flipType="horizontal">
-
-        <!-- Back Layout Goes Here music on-->
-        <ImageView
-            android:id="@+id/soundToggle_back"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="false"
-            android:background="@drawable/speaker"
-            android:clickable="false"
-            android:scaleType="fitXY" />
-
-        <!-- Front Layout Goes Here music off -->
-        <ImageView
-            android:id="@+id/soundToggle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="false"
-            android:background="@drawable/mute"
-            android:clickable="false"
-            android:scaleType="fitXY" />
-    </com.wajahatkarim3.easyflipview.EasyFlipView>
+        android:src="@android:drawable/ic_media_play"
+        android:background="@color/red"/>
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImageView"
