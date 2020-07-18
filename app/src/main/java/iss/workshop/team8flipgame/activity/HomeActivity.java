@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.wajahatkarim3.easyflipview.EasyFlipView;
+
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.service.BGMusicService;
 import pl.droidsonroids.gif.AnimationListener;
@@ -51,9 +53,9 @@ public class HomeActivity extends AppCompatActivity
         logoPink.setVisibility(View.GONE);
 
         //top bar
-        toggle = findViewById(R.id.soundToggle);
+        /*mageView toggle = findViewById(R.id.soundToggle);
         if (toggle != null) { toggle.setOnClickListener(this); }
-
+*/
 
         new Thread(new Runnable() {
             @Override
@@ -174,7 +176,7 @@ public class HomeActivity extends AppCompatActivity
         if (credits != null) {
             credits.setOnClickListener(this);
         }
-        ImageButton toggle = findViewById(R.id.soundToggle);
+        EasyFlipView toggle = findViewById(R.id.flipToggle);
         if (toggle != null) {
             toggle.setOnClickListener(this);
         }
@@ -185,6 +187,16 @@ public class HomeActivity extends AppCompatActivity
             editor.putBoolean("IS_MUTED", false);
             editor.commit();
         }
+
+        if (!sharedPref.getBoolean("IS_MUTED",false)){//not muted
+            //if show front need to flip
+            if (!toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle_back"
+        }
+        else {//mute == music off
+            // if back need to flip
+            if (toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle" front-side
+        }
+
 
         //Bianca Music Service
         if (!sharedPref.getBoolean("IS_MUTED",false)) {
@@ -208,7 +220,11 @@ public class HomeActivity extends AppCompatActivity
             Intent intent = new Intent(this, LeaderBoardActivity.class);
             startActivity(intent);
         }
-        else if (id == R.id.soundToggle) {
+        else if (id == R.id.flipToggle) {
+            //ImageView toggle = findViewById(R.id.soundToggle);
+
+            EasyFlipView currentView= (EasyFlipView) findViewById(R.id.flipToggle);
+            currentView.flipTheView();
             SharedPreferences.Editor editor = sharedPref.edit();
             if (sharedPref.getBoolean("IS_MUTED",false)) {
                 Log.i("MusicLog", "BGMusicService -> UNMUTED");
