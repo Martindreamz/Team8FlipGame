@@ -263,6 +263,10 @@ public class ImagePickingActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (selectedCell.size()>gameImageNo){
+            Toast.makeText(this,"U cannot choose more than "
+                    +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT).show();
+        }
         if(clickable){
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
