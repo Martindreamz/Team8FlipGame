@@ -19,7 +19,7 @@
             android:text="@string/matches"
             android:textSize="30sp"
             android:layout_gravity="left|center"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.6"/>
 
         <Chronometer
             android:layout_width="0dp"
@@ -28,7 +28,7 @@
             android:textSize="30sp"
             android:gravity="right"
             android:layout_gravity="center"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.4"/>
     </LinearLayout>
 
 
