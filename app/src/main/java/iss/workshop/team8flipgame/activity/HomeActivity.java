@@ -191,6 +191,7 @@ public class HomeActivity extends AppCompatActivity
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
+        Log.i("music","IS_MUTED value: " + sharedPref.getBoolean("IS_MUTED",false));
 
     }
 
