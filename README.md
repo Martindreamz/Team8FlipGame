@@ -41,4 +41,4 @@ This is an Android game application.
   - Thread & UniThread
   
 ### External Libraries
-EasyFlipView
+  - EasyFlipView
