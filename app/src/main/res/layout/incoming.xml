@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="top"
-    android:background="@drawable/catwallpaper">
+    android:background="@color/home_bg">
     //tools:context=".HomeActivity"
 
     <ImageButton
@@ -35,13 +35,13 @@
             android:layout_width="250dp"
             android:layout_height="90dp"
             android:id="@+id/app_name_orange"
-            android:background="@drawable/app_name"
+            android:background="@drawable/app_name_nobg"
             android:layout_gravity="center"/>
         <ImageView
             android:layout_width="250dp"
             android:layout_height="90dp"
             android:id="@+id/app_name_pink"
-            android:background="@drawable/app_name_pink"
+            android:background="@drawable/app_name_pink_nobg"
             android:layout_gravity="center"/>
 
     </LinearLayout>
