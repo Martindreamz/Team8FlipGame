@@ -137,6 +137,7 @@ public class HomeActivity extends AppCompatActivity
 
         final GifImageView gifImageView = (GifImageView) findViewById(R.id.gifImageView);
         final GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+        /* follow Martin's need keep the gif running
         gifDrawable.setLoopCount(5);
         //Bianca :This special thread is to monitor the gif is finished.
         new Thread(new Runnable() {
@@ -161,12 +162,7 @@ public class HomeActivity extends AppCompatActivity
                 }
 
             }
-        }).start();
-
-
-        //onAnimationCompleted()
-
-        //gifDrawable.setVisible(false,false); notwork!
+        }).start();*/
 
         Button play = findViewById(R.id.play);
         if (play != null) {
