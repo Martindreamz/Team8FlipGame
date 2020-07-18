@@ -40,4 +40,5 @@ This is an Android game application.
   - Toast Messages
   - Thread & UniThread
   
-  
+### External Libraries
+EasyFlipView
