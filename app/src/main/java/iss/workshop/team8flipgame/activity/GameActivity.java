@@ -262,9 +262,9 @@ public class GameActivity extends AppCompatActivity
             String playerName = nameId.getText().toString();
             finishedGame(playerName,totalScore);
             alertDialog.dismiss();
-
-            Intent intent = new Intent(this, ImagePickingActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //activity-stack(LIFO)  splash->home->picking->game
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear picking&game
             startActivity(intent);
         }
     }
