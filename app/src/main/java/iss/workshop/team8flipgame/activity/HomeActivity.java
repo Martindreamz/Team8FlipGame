@@ -3,7 +3,6 @@ package iss.workshop.team8flipgame.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -12,7 +11,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -21,43 +19,62 @@ import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 import iss.workshop.team8flipgame.R;
 import iss.workshop.team8flipgame.service.BGMusicService;
-import pl.droidsonroids.gif.AnimationListener;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 public class HomeActivity extends AppCompatActivity
         implements View.OnClickListener , ServiceConnection {
-    BGMusicService bgMusicService;
-    public Boolean IS_MUTED = false ; //Setting of BG Music
-    RadioGroup difficulties;
-    int cardCount;
-    String difficulty;
-    SharedPreferences game_service;
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor game_service_editor;
-    ImageButton toggle;
-    Button play;
-    Button leader;
-    Button credits;
-    ImageView logoOrange;
-    ImageView logoPink;
-    Thread logoService;
-    @Override
 
+    //attributes
+    private BGMusicService bgMusicService;
+    private Boolean IS_MUTED = false ; //Setting of BG Music
+    private Button mPlayBtn;
+    private Button mLeaderBtn;
+    private Button mCreditsBtn;
+    private ImageView logoOrange;
+    private ImageView logoPink;
+    private Thread logoService;
+    private int cardCount;
+    private RadioGroup difficulties;
+    private String difficulty;
+    private SharedPreferences game_pref;
+    private SharedPreferences music_pref;
+    private SharedPreferences.Editor game_pref_editor;
+    private SharedPreferences.Editor music_pref_editor;
+    //onCreate
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incoming);
-        game_service = getSharedPreferences("game_service",MODE_PRIVATE);
-        game_service_editor = game_service.edit();
+        game_pref = getSharedPreferences("game_service",MODE_PRIVATE);
+        game_pref_editor = game_pref.edit();
         logoOrange=findViewById(R.id.app_name_orange);
         logoPink=findViewById(R.id.app_name_pink);
         logoPink.setVisibility(View.GONE);
 
         //top bar
-        /*mageView toggle = findViewById(R.id.soundToggle);
-        if (toggle != null) { toggle.setOnClickListener(this); }
-*/
+        EasyFlipView toggle = findViewById(R.id.flipToggle);
+        if (toggle != null) {
+            toggle.setOnClickListener(this);
+        }
 
+        music_pref = getSharedPreferences("music_service",MODE_PRIVATE);
+        if (!music_pref.contains("IS_MUTED")) {
+            music_pref_editor = music_pref.edit();
+            music_pref_editor.putBoolean("IS_MUTED", false);
+            music_pref_editor.commit();
+        }
+
+        if (!music_pref.getBoolean("IS_MUTED",false)){//not muted
+            //if show front need to flip
+            if (!toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle_back"
+        }
+        else {//mute == music off
+            // if back need to flip
+            if (toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle" front-side
+        }
+
+        //cat gif
         logoService = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -88,8 +105,8 @@ public class HomeActivity extends AppCompatActivity
         logoService.start();
 
         //play button
-        play = findViewById(R.id.play);
-        if (play != null) { play.setOnClickListener(this); }
+        mPlayBtn = findViewById(R.id.play);
+        if (mPlayBtn != null) { mPlayBtn.setOnClickListener(this); }
         defaultPreference();
 
         //difficulty radio
@@ -103,23 +120,23 @@ public class HomeActivity extends AppCompatActivity
                     case R.id.easy_modeRD:
                         cardCount=6;
                         difficulty="Easy";
-                        game_service_editor.putString("difficulty",difficulty);
-                        game_service_editor.putInt("cardcount",cardCount);
-                        game_service_editor.commit();
+                        game_pref_editor.putString("difficulty",difficulty);
+                        game_pref_editor.putInt("cardcount",cardCount);
+                        game_pref_editor.commit();
                         break;
                     case R.id.normal_modeRD:
                         cardCount=10;
                         difficulty="Normal";
-                        game_service_editor.putString("difficulty",difficulty);
-                        game_service_editor.putInt("cardcount",cardCount);
-                        game_service_editor.commit();
+                        game_pref_editor.putString("difficulty",difficulty);
+                        game_pref_editor.putInt("cardcount",cardCount);
+                        game_pref_editor.commit();
                         break;
                     case R.id.hard_modeRD:
                         cardCount=14;
                         difficulty="Hard";
-                        game_service_editor.putString("difficulty",difficulty);
-                        game_service_editor.putInt("cardcount",cardCount);
-                        game_service_editor.commit();
+                        game_pref_editor.putString("difficulty",difficulty);
+                        game_pref_editor.putInt("cardcount",cardCount);
+                        game_pref_editor.commit();
                         break;
                 }
 
@@ -127,12 +144,12 @@ public class HomeActivity extends AppCompatActivity
         });
 
         //leaderboard button
-        leader = findViewById(R.id.leaderBoard);
-        if (leader != null) { leader.setOnClickListener(this); }
+        mLeaderBtn = findViewById(R.id.leaderBoard);
+        if (mLeaderBtn != null) { mLeaderBtn.setOnClickListener(this); }
 
         //credits button
-        credits = findViewById(R.id.credits);
-        if (credits != null) { credits.setOnClickListener(this); }
+        mCreditsBtn = findViewById(R.id.credits);
+        if (mCreditsBtn != null) { mCreditsBtn.setOnClickListener(this); }
 
 
 
@@ -165,49 +182,24 @@ public class HomeActivity extends AppCompatActivity
             }
         }).start();*/
 
-        Button play = findViewById(R.id.play);
-        if (play != null) {
-            play.setOnClickListener(this);
-        }
-        Button leader = findViewById(R.id.leaderBoard);
-        if (leader != null) {
-            leader.setOnClickListener(this);
-        }
-        Button credits = findViewById(R.id.credits);
-        if (credits != null) {
-            credits.setOnClickListener(this);
-        }
-        EasyFlipView toggle = findViewById(R.id.flipToggle);
-        if (toggle != null) {
-            toggle.setOnClickListener(this);
-        }
-
-        sharedPref = getSharedPreferences("music_service",MODE_PRIVATE);
-        if (!sharedPref.contains("IS_MUTED")) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean("IS_MUTED", false);
-            editor.commit();
-        }
-
-        if (!sharedPref.getBoolean("IS_MUTED",false)){//not muted
-            //if show front need to flip
-            if (!toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle_back"
-        }
-        else {//mute == music off
-            // if back need to flip
-            if (toggle.isBackSide()) toggle.flipTheView();//"@+id/soundToggle" front-side
-        }
-
-
         //Bianca Music Service
-        if (!sharedPref.getBoolean("IS_MUTED",false)) {
+        if (!music_pref.getBoolean("IS_MUTED",false)) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
-        Log.i("music","IS_MUTED value: " + sharedPref.getBoolean("IS_MUTED",false));
+        Log.i("music","IS_MUTED value: " + music_pref.getBoolean("IS_MUTED",false));
 
     }
 
+
+
+
+
+
+
+
+
+    //onClick
     @Override
     public void onClick(View v) {
 
@@ -226,10 +218,10 @@ public class HomeActivity extends AppCompatActivity
 
             EasyFlipView currentView= (EasyFlipView) findViewById(R.id.flipToggle);
             currentView.flipTheView();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            if (sharedPref.getBoolean("IS_MUTED",false)) {
+            music_pref_editor = music_pref.edit();
+            if (music_pref.getBoolean("IS_MUTED",false)) {
                 Log.i("MusicLog", "BGMusicService -> UNMUTED");
-                editor.putBoolean("IS_MUTED", false);
+                music_pref_editor.putBoolean("IS_MUTED", false);
                 Intent music = new Intent(this, BGMusicService.class);
                 bindService(music, this, BIND_AUTO_CREATE);
                 Toast.makeText(getApplicationContext(),"Un-muted music successfully!",Toast.LENGTH_SHORT).show();
@@ -237,11 +229,11 @@ public class HomeActivity extends AppCompatActivity
             else {
                 bgMusicService.mute();
                 unbindService(this);
-                editor.putBoolean("IS_MUTED", true);
+                music_pref_editor.putBoolean("IS_MUTED", true);
                 Log.i("MusicLog", "BGMusicService -> MUTED");
                 Toast.makeText(getApplicationContext(),"Muted music successfully!",Toast.LENGTH_SHORT).show();
             }
-            editor.commit();
+            music_pref_editor.commit();
         }
 
         else if (id == R.id.credits) {
@@ -250,6 +242,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    //life cycles
     @Override
     public void onPause(){
         super.onPause();
@@ -262,7 +255,7 @@ public class HomeActivity extends AppCompatActivity
         super.onResume();
         // restore
         if(bgMusicService!=null) bgMusicService.resume();
-        else if(!sharedPref.getBoolean("IS_MUTED",false)) {
+        else if(!music_pref.getBoolean("IS_MUTED",false)) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
         }
@@ -276,6 +269,14 @@ public class HomeActivity extends AppCompatActivity
         // end everything
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+    //other functions
     //Bianca Music Service
     //@Override
     public void onServiceConnected(ComponentName name, IBinder binder){
@@ -294,15 +295,9 @@ public class HomeActivity extends AppCompatActivity
     void defaultPreference(){
         cardCount=6;
         difficulty="Easy";
-        game_service_editor.putString("difficulty",difficulty);
-        game_service_editor.putInt("cardcount",cardCount);
-        game_service_editor.commit();
+        game_pref_editor.putString("difficulty",difficulty);
+        game_pref_editor.putInt("cardcount",cardCount);
+        game_pref_editor.commit();
     }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
+
 }

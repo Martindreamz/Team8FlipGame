@@ -21,19 +21,22 @@ import iss.workshop.team8flipgame.model.Score;
 import iss.workshop.team8flipgame.service.DBService;
 
 public class LeaderBoardActivity extends AppCompatActivity
-            implements ServiceConnection {
-    BGMusicService bgMusicService;
-    Boolean IS_MUTED = false ; //Setting of BG Music
-    SharedPreferences sharedPref;
-    List<Score> scores = new ArrayList<>();
+        implements ServiceConnection {
 
+    //attributes
+    private BGMusicService bgMusicService;
+    private Boolean IS_MUTED = false ; //Setting of BG Music
+    private List<Score> scores = new ArrayList<>();
+    private SharedPreferences music_pref;
+
+    //onCreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
-        sharedPref = getSharedPreferences("game_service", MODE_PRIVATE);
-        String difficulty = sharedPref.getString("difficulty", null);
+        music_pref = getSharedPreferences("game_service", MODE_PRIVATE);
+        String difficulty = music_pref.getString("difficulty", null);
 
         //retrieve list of scores from db
         DBService db = new DBService(this);
@@ -59,21 +62,8 @@ public class LeaderBoardActivity extends AppCompatActivity
 
     }
 
-    //Bianca Music Service
-    //@Override
-    public void onServiceConnected(ComponentName name, IBinder binder){
-        BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
-        if(binder != null) {
-            bgMusicService = musicBinder.getService();
-            bgMusicService.playMusic("LEADER_BOARD");
-            Log.i("MusicLog", "BGMusicService Connected, state: play LeaderBoard.");
-        }
-    }
-    @Override
-    public void onServiceDisconnected(ComponentName name){
-        Log.i("MusicLog", "BGMusicService DIS-Connected.");
-    }
-    //Bianca Lifecycle
+    //life cycles
+    // Bianca Lifecycle
     @Override
     public void onPause(){
         super.onPause();
@@ -102,4 +92,22 @@ public class LeaderBoardActivity extends AppCompatActivity
         Intent intent = new Intent(this,HomeActivity.class);
         startActivity(intent);
     }
+
+
+    //other functions
+    //Bianca Music Service
+    //@Override
+    public void onServiceConnected(ComponentName name, IBinder binder){
+        BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
+        if(binder != null) {
+            bgMusicService = musicBinder.getService();
+            bgMusicService.playMusic("LEADER_BOARD");
+            Log.i("MusicLog", "BGMusicService Connected, state: play LeaderBoard.");
+        }
+    }
+    @Override
+    public void onServiceDisconnected(ComponentName name){
+        Log.i("MusicLog", "BGMusicService DIS-Connected.");
+    }
+
 }

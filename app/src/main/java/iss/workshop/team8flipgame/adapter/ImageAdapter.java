@@ -34,18 +34,11 @@ import iss.workshop.team8flipgame.service.DBService;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ImageAdapter extends BaseAdapter{
-
-    private  Context mContext;
     private  ArrayList<Image> images;
     public ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<ImageView> seleted_view = new ArrayList<>();
-    boolean disableFlip;
+    private ArrayList<ImageView> seleted_view = new ArrayList<>();
+    private  Context mContext;
 
-    private static final int NUM_OF_CARDS = 6;
-    int numOfAttempts = 0;
-    int totalTime = 0;
-
-    private static int MASK_HINT_COLOR = 0x99ffffff;
     public ImageAdapter(Context mContext, ArrayList<Image> images){
         this.mContext = mContext;
         this.images=images;
@@ -105,15 +98,8 @@ public class ImageAdapter extends BaseAdapter{
                     }
                     break;}
             }
-
-
-
         }
         return view;
-    }
-
-    public int calculateScore(int totalTime,int numOfAttempts){
-        return (5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / totalTime);
     }
 
     public void updateItemList(ArrayList<Image> newItemList) {

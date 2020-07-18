@@ -26,7 +26,7 @@ public class ScoreAdapter extends ArrayAdapter {
     Context context;
 
     //Test
-    List<Score> scores = new ArrayList<>();
+    List<Score> scores;
 
 
     public ScoreAdapter(@NonNull Context context, int resource, List<Score> scores) {

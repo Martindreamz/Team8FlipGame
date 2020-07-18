@@ -1,5 +1,6 @@
 package iss.workshop.team8flipgame;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,13 +18,16 @@ import iss.workshop.team8flipgame.model.Image;
 
 public class ImageScraper extends AsyncTask<String, Image, Void>{
 
-    ICallback callback;
-    String html;
+    private ICallback callback;
+    private String html;
+
     public ImageScraper(ICallback callback){
         this.callback = callback;
     }
     @Override
     protected Void doInBackground(String... strings) {
+
+//        try converting url to html scripts
         String html = HTMLscraper(strings[0]);
         if(html == null) {
             if(this.callback != null) {
@@ -31,9 +35,10 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
                 return null;
             }
         }
-        ArrayList<URL> imageURLs = imageURLs(html);
 
-        if(imageURLs.size()< ImagePickingActivity.getImageNo()){
+//        convert html scripts back to image urls
+        ArrayList<URL> imageURLs = imageURLs(html);
+        if(imageURLs.size()< ImagePickingActivity.noOfImagesRequired()){
             if(imageURLs.size()==0){
                 if(this.callback != null) callback.makeToast("There no possible images.  Please try another search term.");
                 return null;
@@ -41,10 +46,13 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
             if(this.callback != null) callback.makeToast("There are only "+imageURLs.size()+" possible images.  Please try another search term.");
             return null;
         }
+
+//        scrapping the images based on url
         scrapBitmaps(imageURLs);
         return null;
     }
 
+    //    converting input URL to html script
     String HTMLscraper(String urlinput){
         StringBuffer sb = new StringBuffer();
         try{
@@ -61,10 +69,10 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
             e.printStackTrace();
             return null;
         }
-//        System.out.println(sb.toString());
         return sb.toString();
     }
 
+    //    finding all image urls in a html script
     ArrayList<URL> imageURLs(String html){
         ArrayList<URL> imageURLs = new ArrayList<>();
         int startPos = 0;
@@ -94,8 +102,10 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         return cleanImageURLs;
     }
 
+
+    //    method to convert image urls to bitmaps
     void scrapBitmaps(final ArrayList<URL> imageURLs){
-        for ( int i = 0; i< ImagePickingActivity.getImageNo(); i++){
+        for (int i = 0; i< ImagePickingActivity.noOfImagesRequired(); i++){
             final URL url = imageURLs.get(i);
             new Thread(new Runnable(){
                 @Override
@@ -110,7 +120,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         }
     }
 
-
+    //    sub-method of above
     void downloadImage(URL url) throws IOException{
         if (isCancelled()) return;
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -130,6 +140,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         connection.disconnect();
     }
 
+    //    interface to send bitmaps via Image(class object) to activity
     @Override
     protected void onProgressUpdate(Image... image){
         if(this.callback != null){
@@ -138,6 +149,7 @@ public class ImageScraper extends AsyncTask<String, Image, Void>{
         }
     }
 
+    //    additional interfaces
     public interface ICallback{
         Image getImage(Image image);
         void onBitmapReady(Image image);

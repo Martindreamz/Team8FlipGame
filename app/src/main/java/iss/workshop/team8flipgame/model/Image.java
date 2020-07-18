@@ -6,13 +6,12 @@ import java.io.Serializable;
 
 public class Image implements Serializable {
     private Bitmap bitmap ;
-    private int id;
+
     private int posID;
     private String bianca;// Bianca Test Commit hmmm...
 
     public Image(Bitmap bitmap, int id) {
         this.bitmap = bitmap;
-        this.id = id;
     }
 
     public Image(Bitmap bitmap) {
@@ -35,11 +34,4 @@ public class Image implements Serializable {
         this.bitmap = bitmap;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

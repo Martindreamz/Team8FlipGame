@@ -49,47 +49,38 @@ import iss.workshop.team8flipgame.service.DBService;
 
 public class GameActivity extends AppCompatActivity
         implements ServiceConnection, View.OnClickListener , AdapterView.OnItemClickListener {
-    ArrayList<Bitmap> barray = new ArrayList<>();
-    ArrayList<EasyFlipView> seleted_view = new ArrayList<>();
-    ArrayList<Image> images;
-    ArrayList<Integer> selectedMatch;
-    final Context context = this;
-    BGMusicService bgMusicService;
-    Boolean IS_MUTED = false ; //Setting of BG Music
-    AlertDialog alertDialog;
-    View dialogView;
-    EditText nameId;
-    TextView txtScore;
-    GridView gridView;
-    TextView matches;
-    int matched;
-    long elapsedMillis;
-    Boolean clickable = true;
-    private int NUM_OF_CARDS;
-    private int numOfAttempts = 0;
-    private Chronometer chronometer;
-    private boolean isGameFinished = false;
-    private long totalTime = 0;
-    private int totalScore=0;
-    Thread autoKillGame;
-    SharedPreferences global_pref;
 
-    SharedPreferences sharedPreferences;
+    //attributes
+    private AlertDialog alertDialog;
+    private ArrayList<Bitmap> bitmapArray = new ArrayList<>();
+    private ArrayList<Image> images;
+    private ArrayList<EasyFlipView> selectedCards = new ArrayList<>();
+    private ArrayList<Integer> selectedMatch;
+    private BGMusicService bgMusicService;
+    private Boolean clickable = true;
+    private boolean isGameFinished = false;
+    private Boolean IS_MUTED = false ; //Setting of BG Music
+    private Chronometer chronometer;
+    final Context context = this;
+    private EditText nameId;
+    private GridView gridView;
+    private final Handler handler = new Handler();
+    private int cardMatched;
+    private int cardCount;
+    private int numOfAttempts = 0;
+    private int totalScore=0;
+    private long elapsedMillis;
+    private SharedPreferences game_pref;
+    private SharedPreferences music_pref;
     private static final String CHANNEL_ID = "888888";
     private static final String CHANNEL_NAME = "Message Notification Channel";
     private static final String CHANNEL_DESCRIPTION = "This channel is for displaying messages";
+    private TextView matches;
+    private TextView txtScore;
+    private Thread autoKillGame;
+    private View dialogView;
 
-    private void createNotificationChannel() {
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel( CHANNEL_ID, CHANNEL_NAME, importance);
-            channel.setDescription(CHANNEL_DESCRIPTION);
-            NotificationManager notificationManager =
-                    getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
+    //onCreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,28 +91,26 @@ public class GameActivity extends AppCompatActivity
         selectedMatch = new ArrayList<>();
         Intent intent = getIntent();
         ArrayList<Integer> selectedCell = intent.getIntegerArrayListExtra("selectedCells");
-        global_pref = getSharedPreferences("game_service",MODE_PRIVATE);
-        NUM_OF_CARDS = (int) global_pref.getInt("cardcount",0);
-        System.out.println(NUM_OF_CARDS);
+        game_pref = getSharedPreferences("game_service",MODE_PRIVATE);
+        cardCount = (int) game_pref.getInt("cardcount",0);
+        System.out.println(cardCount);
 
 
         //top bar
         chronometer = findViewById(R.id.chronometer);
         matches = findViewById(R.id.matches);
-        matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
+        matches.setText(cardMatched +"/"+ cardCount +" matches");
 
         //Grid view
         for(int i : selectedCell){
-            images .add (ImagePickingActivity.selectedImage.get(i));
-            images .add (ImagePickingActivity.selectedImage.get(i));
+            images .add (ImagePickingActivity.allScrappedImages.get(i));
+            images .add (ImagePickingActivity.allScrappedImages.get(i));
         }
-
-
 
         Collections.shuffle(images);
         gridView =findViewById(R.id.gridViewGame);
         if(images.size()!=12){
-        gridView.setNumColumns(4);
+            gridView.setNumColumns(4);
         }
         System.out.println("pos 0");
 
@@ -142,9 +131,77 @@ public class GameActivity extends AppCompatActivity
             bindService(music, this, BIND_AUTO_CREATE);
         }
 
-        sharedPreferences = getSharedPreferences("game_service",MODE_PRIVATE);
+        music_pref = getSharedPreferences("game_service",MODE_PRIVATE);
     }
 
+    //onClick
+    @Override
+    public void onClick(View view){
+        int id = view.getId();
+        if(id == R.id.btnOK){
+            nameId = dialogView.findViewById(R.id.name);
+            String playerName = nameId.getText().toString();
+            finishedGame(playerName,totalScore);
+            alertDialog.dismiss();
+            //activity-stack(LIFO)  splash->home->picking->game
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear picking&game
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(!selectedMatch.contains(Integer.valueOf(i))&&clickable==true){
+            System.out.println("Game Activity " + i);
+
+            Image image = images.get(i);
+            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
+            EasyFlipView currentView= (EasyFlipView) gridElement.getChildAt(0);
+            ImageView currentImage = (ImageView) currentView.getChildAt(0);
+            currentImage.setImageBitmap(image.getBitmap());
+
+            currentView.flipTheView();
+
+            if(bitmapArray.size()<2){
+                Bitmap b = image.getBitmap();
+                bitmapArray.add(b);
+                selectedMatch.add(i);
+                selectedCards.add(currentView);
+            }
+
+            if(bitmapArray.size()==2){
+                if(bitmapArray.get(0) == bitmapArray.get(1)){
+                    bitmapArray.clear();
+                    selectedCards.clear();
+                    cardMatched++;
+                    numOfAttempts++;
+                    matches.setText(cardMatched +"/"+ cardCount +" matches");
+                    if(cardMatched == cardCount){
+                        isGameFinished=true;
+                        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        chronometer.stop();
+                        //need to fix
+                    }
+                }
+                else{
+                    numOfAttempts++;
+                    clickable=false;
+                    selectedMatch.remove(selectedMatch.size()-1);
+                    selectedMatch.remove(selectedMatch.size()-1);
+                    handler.postDelayed(runnable,1000);
+                }
+            }
+
+            if(isGameFinished == true){
+                dialogBox(elapsedMillis,numOfAttempts);
+            }
+        }
+    }
+
+
+
+    //life cycles
     @Override
     public void onBackPressed() {
         Toast.makeText(this,"This turn is over, pick image again.",Toast.LENGTH_LONG).show();
@@ -207,7 +264,7 @@ public class GameActivity extends AppCompatActivity
                     try {
                         Thread.sleep(5000);
                         if (!getLifecycle().getCurrentState().name().equals("RESUMED")){
-                        //&& !getLifecycle().getCurrentState().name().equals("STARTED")) {
+                            //&& !getLifecycle().getCurrentState().name().equals("STARTED")) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -245,7 +302,19 @@ public class GameActivity extends AppCompatActivity
         elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
     }
 
-        //@Override
+    //other functions
+    private void createNotificationChannel() {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel( CHANNEL_ID, CHANNEL_NAME, importance);
+            channel.setDescription(CHANNEL_DESCRIPTION);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @Override
     public void onServiceConnected(ComponentName name, IBinder binder){
         BGMusicService.LocalBinder musicBinder = (BGMusicService.LocalBinder) binder;
         if(binder != null) {
@@ -260,27 +329,12 @@ public class GameActivity extends AppCompatActivity
         Log.i("MusicLog", "BGMusicService DIS-Connected.");
     }
 
-    @Override
-    public void onClick(View view){
-        int id = view.getId();
-        if(id == R.id.btnOK){
-            nameId = dialogView.findViewById(R.id.name);
-            String playerName = nameId.getText().toString();
-            finishedGame(playerName,totalScore);
-            alertDialog.dismiss();
-            //activity-stack(LIFO)  splash->home->picking->game
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear picking&game
-            startActivity(intent);
-        }
-    }
-
     public int calculateScore(long totalTime,int numOfAttempts){
-        return (int) ((5 * NUM_OF_CARDS) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
+        return (int) ((5 * cardCount) + (500 / numOfAttempts) + (5000 / (totalTime/1000)));
     }
 
     public void finishedGame(String name ,int totalScore){
-        Score scoreObj = new Score(name,totalScore, sharedPreferences.getString("difficulty", "Easy"));
+        Score scoreObj = new Score(name,totalScore, music_pref.getString("difficulty", "Easy"));
         DBService db = new DBService(this);
         db.addScore(scoreObj);
     }
@@ -324,70 +378,20 @@ public class GameActivity extends AppCompatActivity
         });
     }
 
-    final Handler handler = new Handler();
     final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            seleted_view.get(1).flipTheView();
-            seleted_view.get(0).flipTheView();
-            barray.clear();
-            seleted_view.clear();
+            selectedCards.get(1).flipTheView();
+            selectedCards.get(0).flipTheView();
+            bitmapArray.clear();
+            selectedCards.clear();
             clickable=true;
         }
     };
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(!selectedMatch.contains(Integer.valueOf(i))&&clickable==true){
-            System.out.println("Game Activity " + i);
-
-            Image image = images.get(i);
-            ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
-            EasyFlipView currentView= (EasyFlipView) gridElement.getChildAt(0);
-            ImageView currentImage = (ImageView) currentView.getChildAt(0);
-            currentImage.setImageBitmap(image.getBitmap());
-
-            currentView.flipTheView();
-
-            if(barray.size()<2){
-                Bitmap b = image.getBitmap();
-                barray.add(b);
-                selectedMatch.add(i);
-                seleted_view.add(currentView);
-            }
-
-            if(barray.size()==2){
-                if(barray.get(0) == barray.get(1)){
-                    barray.clear();
-                    seleted_view.clear();
-                    matched++;
-                    numOfAttempts++;
-                    matches.setText(matched+"/"+NUM_OF_CARDS+" matches");
-                    if(matched==NUM_OF_CARDS){
-                        isGameFinished=true;
-                        elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        chronometer.stop();
-                        //need to fix
-                    }
-                }
-                else{
-                    numOfAttempts++;
-                    clickable=false;
-                    selectedMatch.remove(selectedMatch.size()-1);
-                    selectedMatch.remove(selectedMatch.size()-1);
-                    handler.postDelayed(runnable,1000);
-                }
-            }
-
-            if(isGameFinished == true){
-                dialogBox(elapsedMillis,numOfAttempts);
-            }
-        }
-    }
-
     private void createNotification(int times) {
         NotificationCompat.Builder builder =
-            new NotificationCompat.Builder(this, CHANNEL_ID);
+                new NotificationCompat.Builder(this, CHANNEL_ID);
         if (times == 1 ) {
             builder.setSmallIcon(R.drawable.games)
                     .setContentTitle("Oops!")
@@ -411,7 +415,4 @@ public class GameActivity extends AppCompatActivity
         NotificationManagerCompat mgr = NotificationManagerCompat.from(this);
         mgr.notify(notificationId, notification);
     }
-
-
-
 }
