@@ -71,6 +71,7 @@ public class GameActivity extends AppCompatActivity
     private boolean isGameFinished = false;
     private long totalTime = 0;
     private int totalScore=0;
+    Thread autoKillGame;
     SharedPreferences global_pref;
 
     SharedPreferences sharedPreferences;
@@ -153,6 +154,7 @@ public class GameActivity extends AppCompatActivity
             bgMusicService.mute();
             //unbindService(this);
         }
+        if (autoKillGame != null && !autoKillGame.interrupted())  autoKillGame.interrupt();
         finish();//dunt reset the images still show chosen stage
     }
 
@@ -198,17 +200,19 @@ public class GameActivity extends AppCompatActivity
             createNotificationChannel();
             createNotification(1);
             //this thread pending interrupted?
-            new Thread(new Runnable() {
+
+            autoKillGame = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Thread.sleep(5000);
-                        if (!getLifecycle().getCurrentState().name().equals("RESUMED")
-                        || !getLifecycle().getCurrentState().name().equals("STARTED")) {
+                        if (!getLifecycle().getCurrentState().name().equals("RESUMED")){
+                        //&& !getLifecycle().getCurrentState().name().equals("STARTED")) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //Log.i("gameLife", "After 5 seconds, this turn is over!");
+                                    Log.i("gameLife", "After 5 seconds, this turn is over! State as "+
+                                            getLifecycle().getCurrentState().name());
                                     if (bgMusicService!=null) bgMusicService.pause();
                                     Toast.makeText(getApplicationContext(),
                                             "After 5 seconds, this turn is over!", Toast.LENGTH_SHORT).show();
@@ -223,7 +227,8 @@ public class GameActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-            }).start();
+            });
+            autoKillGame.start();
         }
 
     }

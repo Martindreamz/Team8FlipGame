@@ -268,7 +268,7 @@ public class ImagePickingActivity extends AppCompatActivity
         Log.i("gameLife", "current picked Number: " + selectedImage.size());
         if (selectedCell.size()==gameImageNo){
             showToast("If you do not change your choice, the game will auto-start after 5 seconds.",Toast.LENGTH_LONG);
-            //Toast.makeText(this,,Toast.LENGTH_LONG).show();
+            clickable = true;
             autoStartGame = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -337,6 +337,7 @@ public class ImagePickingActivity extends AppCompatActivity
             }
             else if (selectedCell.size()==gameImageNo){
                 imageScraper.cancel(true);
+                clickable = false;
                 Intent intent = new Intent(this, GameActivity.class);
                 intent.putExtra("selectedCells",selectedCell);
                 startActivity(intent);
