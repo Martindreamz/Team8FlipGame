@@ -55,8 +55,6 @@ public class HomeActivity extends AppCompatActivity
         if (toggle != null) { toggle.setOnClickListener(this); }
 
 
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -67,7 +65,7 @@ public class HomeActivity extends AppCompatActivity
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    System.out.println("here");
+                                    //System.out.println("here");
                                     if(logoPink.getVisibility()==View.VISIBLE){
                                         logoPink.setVisibility(View.GONE);
                                     }else{logoPink.setVisibility(View.VISIBLE);}

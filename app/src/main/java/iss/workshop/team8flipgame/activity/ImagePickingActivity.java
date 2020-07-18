@@ -62,6 +62,7 @@ public class ImagePickingActivity extends AppCompatActivity
     private static int MASK_HINT_COLOR = 0x99ffffff;
     Boolean clickable;
     SharedPreferences global_pref;
+    Thread autoStartGame;
 
 
     @SuppressLint("HandlerLeak")
@@ -241,16 +242,48 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onPause();
         // pause music
         if(bgMusicService!=null) bgMusicService.pause();
+        if (autoStartGame != null && autoStartGame.interrupted())  autoStartGame.interrupt();
+
     }
 
     @Override
     public void onResume(){
+        //Log.i("gameLife", "TEST");
         super.onResume();
-        // restore
+        Log.i("gameLife", "current picked Number: " + selectedImage.size());
+        if (selectedCell.size()==gameImageNo){
+            Toast.makeText(this,"If you do not change your choice, the game will auto-start after 5 seconds.",
+                    Toast.LENGTH_LONG).show();
+            autoStartGame = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (selectedCell.size()==gameImageNo) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("gameLife", "AUTO start!");
+                                    Intent intent = new Intent(getApplicationContext(),GameActivity.class);
+                                    intent.putExtra("selectedCells",selectedCell);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            autoStartGame.start();
+        // restore music
         if(bgMusicService!=null) bgMusicService.playMusic("MENU");
         else if(!IS_MUTED) {
             Intent music = new Intent(this, BGMusicService.class);
             bindService(music, this, BIND_AUTO_CREATE);
+        }
+
         }
     }
     @Override
@@ -268,6 +301,7 @@ public class ImagePickingActivity extends AppCompatActivity
                     +gameImageNo + "pictures,pls cancel one of your choices.",Toast.LENGTH_SHORT).show();
         }
         if(clickable){
+            if (autoStartGame != null && autoStartGame.interrupted())  autoStartGame.interrupt();
             ViewGroup gridElement = (ViewGroup) gridView.getChildAt(i);
             ImageView currentImage= (ImageView) gridElement.getChildAt(0);
             if(currentImage.getColorFilter() == null){
