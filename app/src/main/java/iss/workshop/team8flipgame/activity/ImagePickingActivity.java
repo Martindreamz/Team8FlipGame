@@ -276,9 +276,9 @@ public class ImagePickingActivity extends AppCompatActivity
         super.onBackPressed();
         // if clicking back, kill the AUTO-start-game thread
         if (autoStartGame != null && !autoStartGame.interrupted()) autoStartGame.interrupt();
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear game
-        startActivity(intent);
+//        Intent intent = new Intent(this, HomeActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear game
+//        startActivity(intent);
     }
 
 //other functions
@@ -370,9 +370,13 @@ public class ImagePickingActivity extends AppCompatActivity
     //Handling Toast Message together
     // this is used in imageScrapper
     @Override
-    public void makeToast(String message) {
-        showToast(message, Toast.LENGTH_SHORT);
-    }
+    public void makeToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });    }
 
     // all toast message will be shipped via this attribute so that it only show one piece at one time.
     public Toast toastMsg;
