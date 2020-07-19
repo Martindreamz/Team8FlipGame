@@ -1,9 +1,29 @@
-# Team8FlipGame
-Team 8 card flipping memory game
+# Team8-FlipGame Android Project
 
-This is an Android game application.
+## Table of Contents
+- [Background](#background)
+- [Platform](#platform)
+- [Application Structure](#structure)
+- [Contributors](#contributors)
+- [License](#license)
 
-## Application Structure
+
+## Background
+This is an Android card flipping memory game application,finished in 4 days by SA50 Team 8 after 6-day course.
+
+## Platform
+We use Android studio and test via emulator API 28.
+
+## Contributors
+
+<a href="https://github.com/Martindreamz/T8LAPS/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=Martindreamz/T8LAPS" />
+</a>
+
+Made with [contributors-img](https://contributors-img.web.app).
+
+
+## Structure
 ### Activities:
   - VideoSplash (launcher)
   - Home (menu)
@@ -43,3 +63,7 @@ This is an Android game application.
 ### External Libraries
   - EasyFlipView
   - gifDrawable
+  
+## License
+
+
