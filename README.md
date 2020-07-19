@@ -1,3 +1,10 @@
+<div align=center>
+  <img height="150" src="https://github.com/Martindreamz/Team8FlipGame/blob/master/app/src/main/res/drawable/app_name_nobg.png"/>
+</div>
+<div float=right>
+  <img src="https://github.com/Martindreamz/Team8FlipGame/blob/master/app/src/main/res/drawable/logo.png" width="200" alt="logo"/>
+</div>
+
 # Team8-FlipGame Android Project
 
 ## Table of Contents
